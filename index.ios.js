@@ -12,5 +12,8 @@ export const stop = BG.stopGeofences;
 // https://transistorsoft.github.io/react-native-background-geolocation/classes/_react_native_background_geolocation_.backgroundgeolocation.html#addgeofences
 export const addGeofences = BG.addGeofences;
 
+// https://transistorsoft.github.io/react-native-background-geolocation/classes/_react_native_background_geolocation_.backgroundgeolocation.html#removegeofences
+export const removeGeofences = BG.removeGeofences;
+
 // https://transistorsoft.github.io/react-native-background-geolocation/classes/_react_native_background_geolocation_.backgroundgeolocation.html#ongeofence
 exprot const onGeofence = BG.onGeofence;
