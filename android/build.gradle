@@ -5,26 +5,32 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.1'
+        classpath 'me.tatarka:gradle-retrolambda:3.2.0'
     }
 }
 
 allprojects {
     repositories {
+        maven {
+            // All of React Native (JS, Android binaries) is installed from npm
+            url "$rootDir/../node_modules/react-native/android"
+        }
         jcenter()
         google()
     }
 }
 
+apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.android.library'
 
 def DEFAULT_COMPILE_SDK_VERSION = 27
 def DEFAULT_BUILD_TOOLS_VERSION = "27.0.3"
 def DEFAULT_TARGET_SDK_VERSION = 27
+def DEFAULT_GOOGLE_PLAY_SERVICES_VERSION = "+"
 
 android {
     compileSdkVersion project.hasProperty('compileSdkVersion') ? project.compileSdkVersion : DEFAULT_COMPILE_SDK_VERSION
     buildToolsVersion project.hasProperty('buildToolsVersion') ? project.buildToolsVersion : DEFAULT_BUILD_TOOLS_VERSION
-
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion project.hasProperty('targetSdkVersion') ? project.targetSdkVersion : DEFAULT_TARGET_SDK_VERSION
@@ -33,12 +39,19 @@ android {
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
+        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
     buildTypes {
         release {
             minifyEnabled false
             consumerProguardFiles 'proguard-rules.pro'
         }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    productFlavors {
     }
 }
 
@@ -47,5 +60,11 @@ repositories {
 }
 
 dependencies {
-    compile 'com.facebook.react:react-native:+'
+    def googlePlayServicesVersion = project.hasProperty('googlePlayServicesVersion') ? project.googlePlayServicesVersion : DEFAULT_GOOGLE_PLAY_SERVICES_VERSION
+    compile 'com.facebook.react:react-native:0.57.8'
+    compile "com.google.android.gms:play-services-location:$googlePlayServicesVersion"
+    compile 'com.annimon:stream:1.1.8'
+    compile 'com.google.code.gson:gson:2.8.5'
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-core:2.13.0'
 }
