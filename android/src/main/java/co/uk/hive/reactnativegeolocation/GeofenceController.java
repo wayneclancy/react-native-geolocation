@@ -7,22 +7,22 @@ import com.annimon.stream.function.Function;
 import java.util.List;
 
 class GeofenceController {
-    private final GeofenceHandler mGeofenceHandler;
+    private final GeofenceEngine mGeofenceEngine;
     private final GeofenceRepository mGeofenceRepository;
 
-    GeofenceController(GeofenceHandler geofenceHandler,
+    GeofenceController(GeofenceEngine geofenceEngine,
             GeofenceRepository geofenceRepository) {
-        mGeofenceHandler = geofenceHandler;
+        mGeofenceEngine = geofenceEngine;
         mGeofenceRepository = geofenceRepository;
     }
 
     void start(Function<Void, Void> successCallback, Function<Throwable, Void> failureCallback) {
-        mGeofenceHandler.addGeofences(mGeofenceRepository.getGeofences(),
+        mGeofenceEngine.addGeofences(mGeofenceRepository.getGeofences(),
                 successCallback, failureCallback);
     }
 
     void stop(Function<Void, Void> successCallback, Function<Throwable, Void> failureCallback) {
-        mGeofenceHandler.removeGeofences(getGeofenceIds(mGeofenceRepository.getGeofences()),
+        mGeofenceEngine.removeGeofences(getGeofenceIds(mGeofenceRepository.getGeofences()),
                 successCallback, failureCallback);
     }
 

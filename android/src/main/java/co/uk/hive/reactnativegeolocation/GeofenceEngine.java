@@ -4,7 +4,7 @@ import com.annimon.stream.function.Function;
 
 import java.util.List;
 
-interface GeofenceHandler {
+interface GeofenceEngine {
     void addGeofences(List<Geofence> geofenceRequests, Function<Void, Void> successCallback,
             Function<Throwable, Void> failureCallback);
 

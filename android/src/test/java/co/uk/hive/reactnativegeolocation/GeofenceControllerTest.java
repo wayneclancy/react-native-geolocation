@@ -19,7 +19,7 @@ import java.util.List;
 public class GeofenceControllerTest {
 
     @Mock
-    private GeofenceHandler mGeofenceHandler;
+    private GeofenceEngine mGeofenceEngine;
 
     @Mock
     private GeofenceRepository mGeofenceRepository;
@@ -51,7 +51,7 @@ public class GeofenceControllerTest {
 
         mSut.start(mSuccess, mFail);
 
-        verify(mGeofenceHandler).addGeofences(mGeofences, mSuccess, mFail);
+        verify(mGeofenceEngine).addGeofences(mGeofences, mSuccess, mFail);
     }
 
     @Test
@@ -60,7 +60,7 @@ public class GeofenceControllerTest {
 
         mSut.stop(mSuccess, mFail);
 
-        verify(mGeofenceHandler).removeGeofences(Arrays.asList("1", "2"), mSuccess, mFail);
+        verify(mGeofenceEngine).removeGeofences(Arrays.asList("1", "2"), mSuccess, mFail);
     }
 
     @Test
