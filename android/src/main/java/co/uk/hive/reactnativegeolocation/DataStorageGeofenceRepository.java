@@ -49,6 +49,9 @@ class DataStorageGeofenceRepository implements GeofenceRepository {
     }
 
     private void load() {
-        mGeofences = mDataMarshaller.unmarshalList(mDataStorage.load(), Geofence.class);
+        List<Geofence> storedGeofences = mDataMarshaller.unmarshalList(mDataStorage.load(), Geofence.class);
+        if (storedGeofences != null) {
+            mGeofences = storedGeofences;
+        }
     }
 }

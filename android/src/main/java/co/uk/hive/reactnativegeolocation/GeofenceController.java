@@ -6,7 +6,8 @@ import com.annimon.stream.function.Function;
 
 import java.util.List;
 
-class GeofenceController {
+@SuppressWarnings("WeakerAccess")
+public class GeofenceController {
     private final GeofenceEngine mGeofenceEngine;
     private final GeofenceRepository mGeofenceRepository;
 
@@ -16,29 +17,32 @@ class GeofenceController {
         mGeofenceRepository = geofenceRepository;
     }
 
-    void start(Function<Void, Void> successCallback, Function<Throwable, Void> failureCallback) {
-        mGeofenceEngine.addGeofences(mGeofenceRepository.getGeofences(),
-                successCallback, failureCallback);
+    public void start(Function<? super Object, ? super Object> successCallback, Function<? super Object, ? super Object> failureCallback) {
+        mGeofenceEngine.addGeofences(mGeofenceRepository.getGeofences(), successCallback, failureCallback);
     }
 
-    void stop(Function<Void, Void> successCallback, Function<Throwable, Void> failureCallback) {
-        mGeofenceEngine.removeGeofences(getGeofenceIds(mGeofenceRepository.getGeofences()),
-                successCallback, failureCallback);
+    public void stop(Function<? super Object, ? super Object> successCallback, Function<? super Object, ? super Object> failureCallback) {
+        List<String> geofenceIds = getGeofenceIds();
+        if (!geofenceIds.isEmpty()) {
+            mGeofenceEngine.removeGeofences(geofenceIds, successCallback, failureCallback);
+        }
     }
 
-    void addGeofences(List<Geofence> geofences) {
+    private List<String> getGeofenceIds() {
+        return Stream.of(mGeofenceRepository.getGeofences())
+                .map(Geofence::getId)
+                .toList();
+    }
+
+    public void addGeofences(List<Geofence> geofences) {
         mGeofenceRepository.addGeofences(geofences);
     }
 
-    void removeAllGeofences() {
+    public void removeAllGeofences() {
         mGeofenceRepository.removeAllGeofences();
     }
 
-    Optional<Geofence> getGeofenceById(String id) {
+    public Optional<Geofence> getGeofenceById(String id) {
         return mGeofenceRepository.getGeofenceById(id);
-    }
-
-    private List<String> getGeofenceIds(List<Geofence> geofences) {
-        return Stream.of(geofences).map(Geofence::getId).toList();
     }
 }

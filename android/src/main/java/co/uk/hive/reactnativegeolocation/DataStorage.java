@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 
 class DataStorage {
     private static final String SHARED_PREFERENCES_NAME =
-            "@connected-home/react-native-geolocation:geofence_repository";
+            "connected-home_react-native-geolocation_geofence-repository";
     private static final String KEY_GEOFENCES = "key_geofences";
 
     private final SharedPreferences mSharedPreferences;

@@ -2,6 +2,8 @@ package co.uk.hive.reactnativegeolocation;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 
 import org.junit.Before;
@@ -58,6 +60,16 @@ public class DataStorageGeofenceRepositoryTest {
         List<Geofence> geofences = mSut.getGeofences();
 
         assertTrue(geofences.isEmpty());
+    }
+
+    @Test
+    public void dealsWithNullDeserializingResult() {
+        given(mDataMarshaller.unmarshalList(anyString(), eq(Geofence.class))).willReturn(null);
+        given(mDataStorage.load()).willReturn(STORED_DATA);
+
+        mSut = new DataStorageGeofenceRepository(mDataStorage, mDataMarshaller);
+
+        assertTrue(mSut.getGeofences().isEmpty());
     }
 
     private void givenDependencies() {

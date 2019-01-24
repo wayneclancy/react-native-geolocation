@@ -31,16 +31,9 @@ public class GeofenceControllerTest {
             TestData.createGeofence("1"),
             TestData.createGeofence("2"));
 
-    private Function<Void, Void> mSuccess = new Function<Void, Void>() {
+    private Function<? super Object, ? super Object> mCallback = new Function<Object, Object>() {
         @Override
-        public Void apply(Void aVoid) {
-            return null;
-        }
-    };
-
-    private Function<Throwable, Void> mFail = new Function<Throwable, Void>() {
-        @Override
-        public Void apply(Throwable throwable) {
+        public Object apply(Object ignored) {
             return null;
         }
     };
@@ -49,18 +42,18 @@ public class GeofenceControllerTest {
     public void startsGeofences() {
         given(mGeofenceRepository.getGeofences()).willReturn(mGeofences);
 
-        mSut.start(mSuccess, mFail);
+        mSut.start(mCallback, mCallback);
 
-        verify(mGeofenceEngine).addGeofences(mGeofences, mSuccess, mFail);
+        verify(mGeofenceEngine).addGeofences(mGeofences, mCallback, mCallback);
     }
 
     @Test
     public void stopsGeofences() {
         given(mGeofenceRepository.getGeofences()).willReturn(mGeofences);
 
-        mSut.stop(mSuccess, mFail);
+        mSut.stop(mCallback, mCallback);
 
-        verify(mGeofenceEngine).removeGeofences(Arrays.asList("1", "2"), mSuccess, mFail);
+        verify(mGeofenceEngine).removeGeofences(Arrays.asList("1", "2"), mCallback, mCallback);
     }
 
     @Test
