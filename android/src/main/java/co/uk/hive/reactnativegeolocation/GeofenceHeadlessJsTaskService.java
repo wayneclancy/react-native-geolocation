@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import com.facebook.react.HeadlessJsTaskService;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.jstasks.HeadlessJsTaskConfig;
@@ -28,11 +29,7 @@ public class GeofenceHeadlessJsTaskService extends HeadlessJsTaskService {
 
     public static void start(Context context, Bundle params) {
         Intent intent = new Intent(context, GeofenceHeadlessJsTaskService.class).putExtras(params);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(intent);
-        } else {
-            context.startService(intent);
-        }
+        ContextCompat.startForegroundService(context, intent);
     }
 }
 
