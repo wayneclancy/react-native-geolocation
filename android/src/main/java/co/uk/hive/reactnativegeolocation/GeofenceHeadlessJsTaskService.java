@@ -2,7 +2,6 @@ package co.uk.hive.reactnativegeolocation;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -29,6 +28,7 @@ public class GeofenceHeadlessJsTaskService extends HeadlessJsTaskService {
 
     public static void start(Context context, Bundle params) {
         Intent intent = new Intent(context, GeofenceHeadlessJsTaskService.class).putExtras(params);
+        HeadlessJsTaskService.acquireWakeLockNow(context);
         ContextCompat.startForegroundService(context, intent);
     }
 }
