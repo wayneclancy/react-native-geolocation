@@ -30,6 +30,12 @@ public class GeofenceController {
         }
     }
 
+    public void restart(Function<? super Object, ? super Object> successCallback, Function<? super Object, ? super Object> failureCallback) {
+        if (mGeofenceRepository.areGeofencesEnabled()) {
+            start(successCallback, failureCallback);
+        }
+    }
+
     private List<String> getGeofenceIds() {
         return Stream.of(mGeofenceRepository.getGeofences())
                 .map(Geofence::getId)
