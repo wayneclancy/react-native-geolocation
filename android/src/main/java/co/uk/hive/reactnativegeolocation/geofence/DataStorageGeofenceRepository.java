@@ -42,7 +42,7 @@ public class DataStorageGeofenceRepository implements GeofenceRepository {
     }
 
     @Override
-    public boolean areGeofencesEnabled() {
+    public boolean areGeofencesActivated() {
         return mActivated;
     }
 

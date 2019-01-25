@@ -70,7 +70,7 @@ public class DataStorageGeofenceRepositoryTest {
     public void storesEnabledState() {
         mSut.setGeofencesActivated(true);
 
-        assertTrue(mSut.areGeofencesEnabled());
+        assertTrue(mSut.areGeofencesActivated());
     }
 
     private void givenDependencies() {

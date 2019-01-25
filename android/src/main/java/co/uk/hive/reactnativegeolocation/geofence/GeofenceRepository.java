@@ -15,5 +15,5 @@ public interface GeofenceRepository {
 
     void setGeofencesActivated(boolean enabled);
 
-    boolean areGeofencesEnabled();
+    boolean areGeofencesActivated();
 }
