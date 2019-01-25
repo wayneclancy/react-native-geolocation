@@ -51,8 +51,7 @@ public class GeofenceTransitionJobService extends JobIntentService {
         }
 
         Stream.of(geofencingEvent.getTriggeringGeofences())
-                .map(com.google.android.gms.location.Geofence::getRequestId)
-                .map(mGeofenceController::getGeofenceById)
+                .map(gmsGeofence -> mGeofenceController.getGeofenceById(gmsGeofence.getRequestId()))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .forEach(geofence -> sendEvent(geofence, geofencingEvent));
