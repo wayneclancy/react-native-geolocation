@@ -1,4 +1,4 @@
-package co.uk.hive.reactnativegeolocation;
+package co.uk.hive.reactnativegeolocation.geofence;
 
 import android.content.Context;
 import android.content.Intent;

@@ -1,5 +1,7 @@
 package co.uk.hive.reactnativegeolocation;
 
+import co.uk.hive.reactnativegeolocation.geofence.DataStorageGeofenceRepository;
+import co.uk.hive.reactnativegeolocation.geofence.Geofence;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,8 +12,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import static co.uk.hive.reactnativegeolocation.DataStorageGeofenceRepository.KEY_ACTIVATED;
-import static co.uk.hive.reactnativegeolocation.DataStorageGeofenceRepository.KEY_GEOFENCES;
+import static co.uk.hive.reactnativegeolocation.geofence.DataStorageGeofenceRepository.KEY_ACTIVATED;
+import static co.uk.hive.reactnativegeolocation.geofence.DataStorageGeofenceRepository.KEY_GEOFENCES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;

@@ -1,4 +1,4 @@
-package co.uk.hive.reactnativegeolocation;
+package co.uk.hive.reactnativegeolocation.geofence;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.JobIntentService;
 import android.util.Log;
-
+import co.uk.hive.reactnativegeolocation.ForegroundChecker;
 import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
 import com.facebook.react.ReactApplication;
@@ -16,8 +16,6 @@ import com.facebook.react.bridge.Arguments;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.android.gms.location.GeofenceStatusCodes;
 import com.google.android.gms.location.GeofencingEvent;
-
-import java.util.List;
 
 public class GeofenceTransitionJobService extends JobIntentService {
     private static final String TAG = GeofenceTransitionJobService.class.getSimpleName();

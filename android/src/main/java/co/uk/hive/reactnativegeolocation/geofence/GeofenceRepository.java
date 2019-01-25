@@ -1,10 +1,10 @@
-package co.uk.hive.reactnativegeolocation;
+package co.uk.hive.reactnativegeolocation.geofence;
 
 import com.annimon.stream.Optional;
 
 import java.util.List;
 
-interface GeofenceRepository {
+public interface GeofenceRepository {
     void addGeofences(List<Geofence> geofences);
 
     void removeAllGeofences();

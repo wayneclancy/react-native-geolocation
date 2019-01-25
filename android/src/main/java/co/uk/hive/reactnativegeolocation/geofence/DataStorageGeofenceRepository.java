@@ -1,12 +1,14 @@
-package co.uk.hive.reactnativegeolocation;
+package co.uk.hive.reactnativegeolocation.geofence;
 
+import co.uk.hive.reactnativegeolocation.DataMarshaller;
+import co.uk.hive.reactnativegeolocation.DataStorage;
 import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
 
 import java.util.LinkedList;
 import java.util.List;
 
-class DataStorageGeofenceRepository implements GeofenceRepository {
+public class DataStorageGeofenceRepository implements GeofenceRepository {
 
     public static final String KEY_GEOFENCES = "key_geofences";
     public static final String KEY_ACTIVATED = "key_activated";
@@ -17,7 +19,7 @@ class DataStorageGeofenceRepository implements GeofenceRepository {
     private List<Geofence> mGeofences = new LinkedList<>();
     private boolean mActivated;
 
-    DataStorageGeofenceRepository(DataStorage dataStorage, DataMarshaller dataMarshaller) {
+    public DataStorageGeofenceRepository(DataStorage dataStorage, DataMarshaller dataMarshaller) {
         mDataStorage = dataStorage;
         mDataMarshaller = dataMarshaller;
         load();

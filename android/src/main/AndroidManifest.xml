@@ -7,16 +7,16 @@
 
     <application>
         <service
-                android:name="co.uk.hive.reactnativegeolocation.GeofenceHeadlessJsTaskService"
+                android:name="co.uk.hive.reactnativegeolocation.geofence.GeofenceHeadlessJsTaskService"
                 android:exported="false"/>
 
         <service
-                android:name="co.uk.hive.reactnativegeolocation.GeofenceTransitionJobService"
+                android:name="co.uk.hive.reactnativegeolocation.geofence.GeofenceTransitionJobService"
                 android:permission="android.permission.BIND_JOB_SERVICE"
                 android:exported="false"/>
 
         <receiver
-                android:name="co.uk.hive.reactnativegeolocation.GeofenceBroadcastReceiver"
+                android:name="co.uk.hive.reactnativegeolocation.geofence.GeofenceBroadcastReceiver"
                 android:exported="false"/>
     </application>
 </manifest>

@@ -1,10 +1,10 @@
 package co.uk.hive.reactnativegeolocation;
 
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-
+import co.uk.hive.reactnativegeolocation.geofence.Geofence;
+import co.uk.hive.reactnativegeolocation.geofence.GeofenceController;
+import co.uk.hive.reactnativegeolocation.geofence.GeofenceEngine;
+import co.uk.hive.reactnativegeolocation.geofence.GeofenceRepository;
 import com.annimon.stream.function.Function;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -13,6 +13,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @SuppressWarnings("Convert2Lambda")
 @RunWith(MockitoJUnitRunner.class)
