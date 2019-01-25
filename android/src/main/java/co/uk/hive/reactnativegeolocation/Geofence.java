@@ -2,7 +2,8 @@ package co.uk.hive.reactnativegeolocation;
 
 import android.os.Bundle;
 
-class Geofence {
+@SuppressWarnings("WeakerAccess")
+public class Geofence {
     private final String mId;
     private final int mRadius;
     private final double mLatitude;
@@ -13,7 +14,7 @@ class Geofence {
     private final int mLoiteringDelay;
     private Bundle mExtras;
 
-    Geofence(String id, int radius, double latitude, double longitude, boolean notifyOnEnter,
+    public Geofence(String id, int radius, double latitude, double longitude, boolean notifyOnEnter,
             boolean notifyOnExit, boolean notifyOnDwell, int loiteringDelay, Bundle extras) {
         mId = id;
         mRadius = radius;
