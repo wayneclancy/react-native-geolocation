@@ -1,11 +1,5 @@
 package co.uk.hive.reactnativegeolocation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.given;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,6 +9,14 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
+import static co.uk.hive.reactnativegeolocation.DataStorageGeofenceRepository.KEY_ACTIVATED;
+import static co.uk.hive.reactnativegeolocation.DataStorageGeofenceRepository.KEY_GEOFENCES;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DataStorageGeofenceRepositoryTest {
@@ -63,25 +65,25 @@ public class DataStorageGeofenceRepositoryTest {
     }
 
     @Test
-    public void dealsWithNullDeserializingResult() {
-        given(mDataMarshaller.unmarshalList(anyString(), eq(Geofence.class))).willReturn(null);
-        given(mDataStorage.load()).willReturn(STORED_DATA);
+    public void storesEnabledState() {
+        mSut.setGeofencesActivated(true);
 
-        mSut = new DataStorageGeofenceRepository(mDataStorage, mDataMarshaller);
-
-        assertTrue(mSut.getGeofences().isEmpty());
+        assertTrue(mSut.areGeofencesEnabled());
     }
 
     private void givenDependencies() {
-        given(mDataStorage.load()).willReturn(STORED_DATA);
+        given(mDataStorage.load(KEY_GEOFENCES)).willReturn(STORED_DATA);
+        given(mDataMarshaller.unmarshalList(eq(STORED_DATA), eq(Geofence.class), any())).willReturn(mGeofences);
         given(mDataMarshaller.marshal(mGeofences)).willReturn(STORED_DATA);
-        given(mDataMarshaller.unmarshalList(STORED_DATA, Geofence.class)).willReturn(mGeofences);
+
+        given(mDataMarshaller.marshal(false)).willReturn("false");
+        given(mDataStorage.load(KEY_ACTIVATED)).willReturn("false");
+        given(mDataMarshaller.unmarshal(eq("false"), eq(Boolean.class), any())).willReturn(false);
+        given(mDataMarshaller.marshal(true)).willReturn("true");
     }
 
     private void givenGeofences() {
         mGeofences.add(TestData.createGeofence("1"));
         mGeofences.add(TestData.createGeofence("2"));
     }
-
-
 }

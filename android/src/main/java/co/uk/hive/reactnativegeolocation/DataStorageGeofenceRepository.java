@@ -8,10 +8,14 @@ import java.util.List;
 
 class DataStorageGeofenceRepository implements GeofenceRepository {
 
+    public static final String KEY_GEOFENCES = "key_geofences";
+    public static final String KEY_ACTIVATED = "key_activated";
+
     private final DataStorage mDataStorage;
     private final DataMarshaller mDataMarshaller;
 
     private List<Geofence> mGeofences = new LinkedList<>();
+    private boolean mActivated;
 
     DataStorageGeofenceRepository(DataStorage dataStorage, DataMarshaller dataMarshaller) {
         mDataStorage = dataStorage;
@@ -30,6 +34,17 @@ class DataStorageGeofenceRepository implements GeofenceRepository {
     }
 
     @Override
+    public void setGeofencesActivated(boolean activated) {
+        mActivated = activated;
+        save();
+    }
+
+    @Override
+    public boolean areGeofencesEnabled() {
+        return mActivated;
+    }
+
+    @Override
     public void addGeofences(List<Geofence> geofences) {
         Stream.of(geofences)
                 .filter(geofence -> !mGeofences.contains(geofence))
@@ -45,13 +60,13 @@ class DataStorageGeofenceRepository implements GeofenceRepository {
 
     private void save() {
         String data = mDataMarshaller.marshal(mGeofences);
-        mDataStorage.store(data);
+        mDataStorage.store(KEY_GEOFENCES, data);
+
+        mDataStorage.store(KEY_ACTIVATED, mDataMarshaller.marshal(mActivated));
     }
 
     private void load() {
-        List<Geofence> storedGeofences = mDataMarshaller.unmarshalList(mDataStorage.load(), Geofence.class);
-        if (storedGeofences != null) {
-            mGeofences = storedGeofences;
-        }
+        mGeofences = mDataMarshaller.unmarshalList(mDataStorage.load(KEY_GEOFENCES), Geofence.class, mGeofences);
+        mActivated = mDataMarshaller.unmarshal(mDataStorage.load(KEY_ACTIVATED), Boolean.class, mActivated);
     }
 }
