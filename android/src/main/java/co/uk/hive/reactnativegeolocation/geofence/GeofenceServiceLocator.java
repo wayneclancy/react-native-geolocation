@@ -9,7 +9,10 @@ import com.google.gson.GsonBuilder;
 
 public class GeofenceServiceLocator {
     public static GeofenceController getGeofenceController(Context context) {
-        return new GeofenceController(new GeofenceEngine(context), getGeofenceRepository(context));
+        return new GeofenceController(
+                new GeofenceEngine(context),
+                getGeofenceRepository(context),
+                new ReRegistrationScheduler(context));
     }
 
     private static GeofenceRepository getGeofenceRepository(Context context) {

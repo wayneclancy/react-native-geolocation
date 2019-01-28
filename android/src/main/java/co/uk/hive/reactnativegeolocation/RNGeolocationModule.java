@@ -27,6 +27,11 @@ public class RNGeolocationModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void ready() {
+        mGeofenceController.setupReregistration();
+    }
+
+    @ReactMethod
     public void startGeofences(Callback successCallback, Callback failureCallback) {
         mGeofenceController.start(convertCallback(successCallback), convertCallback(failureCallback));
     }

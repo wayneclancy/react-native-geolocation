@@ -1,5 +1,6 @@
 package co.uk.hive.reactnativegeolocation.geofence;
 
+import android.os.Build;
 import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
 import com.annimon.stream.function.Function;
@@ -10,11 +11,14 @@ import java.util.List;
 public class GeofenceController {
     private final GeofenceEngine mGeofenceEngine;
     private final GeofenceRepository mGeofenceRepository;
+    private ReRegistrationScheduler mReRegistrationScheduler;
 
     GeofenceController(GeofenceEngine geofenceEngine,
-            GeofenceRepository geofenceRepository) {
+            GeofenceRepository geofenceRepository,
+                       ReRegistrationScheduler reRegistrationScheduler) {
         mGeofenceEngine = geofenceEngine;
         mGeofenceRepository = geofenceRepository;
+        mReRegistrationScheduler = reRegistrationScheduler;
     }
 
     public void start(Function<? super Object, ? super Object> successCallback, Function<? super Object, ? super Object> failureCallback) {
@@ -52,5 +56,11 @@ public class GeofenceController {
 
     public Optional<Geofence> getGeofenceById(String id) {
         return mGeofenceRepository.getGeofenceById(id);
+    }
+
+    public void setupReregistration() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mReRegistrationScheduler.scheduleReRegistration();
+        } // else: implicit broadcast will be triggered
     }
 }
