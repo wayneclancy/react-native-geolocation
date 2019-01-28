@@ -4,9 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-public class GeofenceBroadcastReceiver extends BroadcastReceiver {
+public class GeofenceEventBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        GeofenceTransitionJobService.enqueueWork(context, intent);
+        GeofenceEventJobService.enqueueWork(context, intent);
     }
 }

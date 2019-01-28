@@ -17,8 +17,8 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.android.gms.location.GeofenceStatusCodes;
 import com.google.android.gms.location.GeofencingEvent;
 
-public class GeofenceTransitionJobService extends JobIntentService {
-    private static final String TAG = GeofenceTransitionJobService.class.getSimpleName();
+public class GeofenceEventJobService extends JobIntentService {
+    private static final String TAG = GeofenceEventJobService.class.getSimpleName();
     private static final int JOB_ID = 571;
     private static final String GEOFENCE_EVENT_NAME = "geofence";
 
@@ -27,7 +27,7 @@ public class GeofenceTransitionJobService extends JobIntentService {
     private GeofenceMapper mGeofenceMapper = new GeofenceMapper();
 
     public static void enqueueWork(Context context, Intent intent) {
-        enqueueWork(context, GeofenceTransitionJobService.class, JOB_ID, intent);
+        enqueueWork(context, GeofenceEventJobService.class, JOB_ID, intent);
     }
 
     @Override

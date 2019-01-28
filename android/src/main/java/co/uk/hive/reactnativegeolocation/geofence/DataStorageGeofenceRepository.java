@@ -11,13 +11,11 @@ import java.util.List;
 public class DataStorageGeofenceRepository implements GeofenceRepository {
 
     public static final String KEY_GEOFENCES = "key_geofences";
-    public static final String KEY_ACTIVATED = "key_activated";
 
     private final DataStorage mDataStorage;
     private final DataMarshaller mDataMarshaller;
 
     private List<Geofence> mGeofences = new LinkedList<>();
-    private boolean mActivated;
 
     public DataStorageGeofenceRepository(DataStorage dataStorage, DataMarshaller dataMarshaller) {
         mDataStorage = dataStorage;
@@ -33,17 +31,6 @@ public class DataStorageGeofenceRepository implements GeofenceRepository {
     @Override
     public Optional<Geofence> getGeofenceById(String id) {
         return Stream.of(mGeofences).filter(geofence -> geofence.getId().equals(id)).findFirst();
-    }
-
-    @Override
-    public void setGeofencesActivated(boolean activated) {
-        mActivated = activated;
-        save();
-    }
-
-    @Override
-    public boolean areGeofencesActivated() {
-        return mActivated;
     }
 
     @Override
@@ -63,12 +50,9 @@ public class DataStorageGeofenceRepository implements GeofenceRepository {
     private void save() {
         String data = mDataMarshaller.marshal(mGeofences);
         mDataStorage.store(KEY_GEOFENCES, data);
-
-        mDataStorage.store(KEY_ACTIVATED, mDataMarshaller.marshal(mActivated));
     }
 
     private void load() {
         mGeofences = mDataMarshaller.unmarshalList(mDataStorage.load(KEY_GEOFENCES), Geofence.class, mGeofences);
-        mActivated = mDataMarshaller.unmarshal(mDataStorage.load(KEY_ACTIVATED), Boolean.class, mActivated);
     }
 }

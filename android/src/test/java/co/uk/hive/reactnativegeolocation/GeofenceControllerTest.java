@@ -1,9 +1,6 @@
 package co.uk.hive.reactnativegeolocation;
 
-import co.uk.hive.reactnativegeolocation.geofence.Geofence;
-import co.uk.hive.reactnativegeolocation.geofence.GeofenceController;
-import co.uk.hive.reactnativegeolocation.geofence.GeofenceEngine;
-import co.uk.hive.reactnativegeolocation.geofence.GeofenceRepository;
+import co.uk.hive.reactnativegeolocation.geofence.*;
 import com.annimon.stream.function.Function;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +26,9 @@ public class GeofenceControllerTest {
     @Mock
     private GeofenceRepository mGeofenceRepository;
 
+    @Mock
+    private GeofenceActivator mGeofenceActivator;
+
     @InjectMocks
     private GeofenceController mSut;
 
@@ -50,7 +50,7 @@ public class GeofenceControllerTest {
         mSut.start(mCallback, mCallback);
 
         verify(mGeofenceEngine).addGeofences(mGeofences, mCallback, mCallback);
-        verify(mGeofenceRepository).setGeofencesActivated(true);
+        verify(mGeofenceActivator).setGeofencesActivated(true);
     }
 
     @Test
@@ -60,17 +60,17 @@ public class GeofenceControllerTest {
         mSut.stop(mCallback, mCallback);
 
         verify(mGeofenceEngine).removeGeofences(Arrays.asList("1", "2"), mCallback, mCallback);
-        verify(mGeofenceRepository).setGeofencesActivated(false);
+        verify(mGeofenceActivator).setGeofencesActivated(false);
     }
 
     @Test
     public void restartsGeofences() {
         given(mGeofenceRepository.getGeofences()).willReturn(mGeofences);
-        given(mGeofenceRepository.areGeofencesActivated()).willReturn(true);
+        given(mGeofenceActivator.areGeofencesActivated()).willReturn(true);
 
         mSut.restart(mCallback, mCallback);
 
-        verify(mGeofenceRepository).areGeofencesActivated();
+        verify(mGeofenceActivator).areGeofencesActivated();
         verify(mGeofenceEngine).addGeofences(eq(mGeofences), any(), any());
     }
 

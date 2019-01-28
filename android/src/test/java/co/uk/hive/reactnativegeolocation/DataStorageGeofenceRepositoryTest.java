@@ -12,7 +12,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import static co.uk.hive.reactnativegeolocation.geofence.DataStorageGeofenceRepository.KEY_ACTIVATED;
 import static co.uk.hive.reactnativegeolocation.geofence.DataStorageGeofenceRepository.KEY_GEOFENCES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -66,22 +65,10 @@ public class DataStorageGeofenceRepositoryTest {
         assertTrue(geofences.isEmpty());
     }
 
-    @Test
-    public void storesEnabledState() {
-        mSut.setGeofencesActivated(true);
-
-        assertTrue(mSut.areGeofencesActivated());
-    }
-
     private void givenDependencies() {
         given(mDataStorage.load(KEY_GEOFENCES)).willReturn(STORED_DATA);
         given(mDataMarshaller.unmarshalList(eq(STORED_DATA), eq(Geofence.class), any())).willReturn(mGeofences);
         given(mDataMarshaller.marshal(mGeofences)).willReturn(STORED_DATA);
-
-        given(mDataMarshaller.marshal(false)).willReturn("false");
-        given(mDataStorage.load(KEY_ACTIVATED)).willReturn("false");
-        given(mDataMarshaller.unmarshal(eq("false"), eq(Boolean.class), any())).willReturn(false);
-        given(mDataMarshaller.marshal(true)).willReturn("true");
     }
 
     private void givenGeofences() {

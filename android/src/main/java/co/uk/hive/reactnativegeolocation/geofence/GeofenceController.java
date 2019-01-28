@@ -1,5 +1,6 @@
 package co.uk.hive.reactnativegeolocation.geofence;
 
+import android.os.Build;
 import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
 import com.annimon.stream.function.Function;
@@ -10,20 +11,26 @@ import java.util.List;
 public class GeofenceController {
     private final GeofenceEngine mGeofenceEngine;
     private final GeofenceRepository mGeofenceRepository;
+    private final GeofenceActivator mGeofenceActivator;
+    private final ReRegistrationScheduler mReRegistrationScheduler;
 
     GeofenceController(GeofenceEngine geofenceEngine,
-            GeofenceRepository geofenceRepository) {
+            GeofenceRepository geofenceRepository,
+                       GeofenceActivator geofenceActivator,
+                       ReRegistrationScheduler reRegistrationScheduler) {
         mGeofenceEngine = geofenceEngine;
         mGeofenceRepository = geofenceRepository;
+        mGeofenceActivator = geofenceActivator;
+        mReRegistrationScheduler = reRegistrationScheduler;
     }
 
     public void start(Function<? super Object, ? super Object> successCallback, Function<? super Object, ? super Object> failureCallback) {
-        mGeofenceRepository.setGeofencesActivated(true);
+        mGeofenceActivator.setGeofencesActivated(true);
         mGeofenceEngine.addGeofences(mGeofenceRepository.getGeofences(), successCallback, failureCallback);
     }
 
     public void stop(Function<? super Object, ? super Object> successCallback, Function<? super Object, ? super Object> failureCallback) {
-        mGeofenceRepository.setGeofencesActivated(false);
+        mGeofenceActivator.setGeofencesActivated(false);
         List<String> geofenceIds = getGeofenceIds();
         if (!geofenceIds.isEmpty()) {
             mGeofenceEngine.removeGeofences(geofenceIds, successCallback, failureCallback);
@@ -31,7 +38,7 @@ public class GeofenceController {
     }
 
     public void restart(Function<? super Object, ? super Object> successCallback, Function<? super Object, ? super Object> failureCallback) {
-        if (mGeofenceRepository.areGeofencesActivated()) {
+        if (mGeofenceActivator.areGeofencesActivated()) {
             start(successCallback, failureCallback);
         }
     }
@@ -52,5 +59,11 @@ public class GeofenceController {
 
     public Optional<Geofence> getGeofenceById(String id) {
         return mGeofenceRepository.getGeofenceById(id);
+    }
+
+    public void setupReregistration() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mReRegistrationScheduler.scheduleReRegistration();
+        } // else: implicit broadcast will be triggered
     }
 }

@@ -12,8 +12,4 @@ public interface GeofenceRepository {
     List<Geofence> getGeofences();
 
     Optional<Geofence> getGeofenceById(String id);
-
-    void setGeofencesActivated(boolean enabled);
-
-    boolean areGeofencesActivated();
 }
