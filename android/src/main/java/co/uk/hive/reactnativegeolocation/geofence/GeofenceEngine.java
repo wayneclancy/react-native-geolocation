@@ -26,7 +26,7 @@ public class GeofenceEngine {
         mContext = context;
         mGeofencingClient = LocationServices.getGeofencingClient(mContext);
 
-        Intent intent = new Intent(mContext, GeofenceBroadcastReceiver.class);
+        Intent intent = new Intent(mContext, GeofenceEventBroadcastReceiver.class);
         mPendingIntent = PendingIntent.getBroadcast(mContext, 0,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
