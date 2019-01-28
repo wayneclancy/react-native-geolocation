@@ -4,20 +4,28 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application>
         <service
-                android:name="co.uk.hive.reactnativegeolocation.GeofenceHeadlessJsTaskService"
+                android:name="co.uk.hive.reactnativegeolocation.geofence.GeofenceHeadlessJsTaskService"
                 android:exported="false"/>
 
         <service
-                android:name="co.uk.hive.reactnativegeolocation.GeofenceTransitionJobService"
+                android:name="co.uk.hive.reactnativegeolocation.geofence.GeofenceTransitionJobService"
                 android:permission="android.permission.BIND_JOB_SERVICE"
                 android:exported="false"/>
 
         <receiver
-                android:name="co.uk.hive.reactnativegeolocation.GeofenceBroadcastReceiver"
+                android:name="co.uk.hive.reactnativegeolocation.geofence.GeofenceBroadcastReceiver"
                 android:exported="false"/>
+
+        <receiver
+                android:name="co.uk.hive.reactnativegeolocation.BootCompleteReceiver"
+                android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>
-  

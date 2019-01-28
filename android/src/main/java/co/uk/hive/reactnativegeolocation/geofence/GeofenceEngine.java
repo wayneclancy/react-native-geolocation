@@ -1,4 +1,4 @@
-package co.uk.hive.reactnativegeolocation;
+package co.uk.hive.reactnativegeolocation.geofence;
 
 import android.Manifest;
 import android.app.PendingIntent;
@@ -16,7 +16,7 @@ import java.util.List;
 
 import static com.google.android.gms.location.Geofence.*;
 
-class GeofenceEngine {
+public class GeofenceEngine {
 
     private final GeofencingClient mGeofencingClient;
     private final Context mContext;
@@ -31,8 +31,8 @@ class GeofenceEngine {
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    void addGeofences(List<Geofence> geofenceRequests, Function<? super Object, ? super Object> successCallback,
-            Function<? super Object, ? super Object> failureCallback) {
+    public void addGeofences(List<Geofence> geofenceRequests, Function<? super Object, ? super Object> successCallback,
+                             Function<? super Object, ? super Object> failureCallback) {
         if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             throw new IllegalStateException("Location permission needs to be granted before calling addGeofences");
@@ -62,8 +62,8 @@ class GeofenceEngine {
                 .addOnFailureListener(failureCallback::apply);
     }
 
-    void removeGeofences(List<String> geofenceIds, Function<? super Object, ? super Object> successCallback,
-                         Function<? super Object, ? super Object> failureCallback) {
+    public void removeGeofences(List<String> geofenceIds, Function<? super Object, ? super Object> successCallback,
+                                Function<? super Object, ? super Object> failureCallback) {
         mGeofencingClient.removeGeofences(geofenceIds)
                 .addOnSuccessListener(successCallback::apply)
                 .addOnFailureListener(failureCallback::apply);

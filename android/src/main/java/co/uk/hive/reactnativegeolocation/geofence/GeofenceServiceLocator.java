@@ -1,7 +1,9 @@
-package co.uk.hive.reactnativegeolocation;
+package co.uk.hive.reactnativegeolocation.geofence;
 
 import android.content.Context;
-
+import co.uk.hive.reactnativegeolocation.BundleTypeAdapterFactory;
+import co.uk.hive.reactnativegeolocation.DataMarshaller;
+import co.uk.hive.reactnativegeolocation.DataStorage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 

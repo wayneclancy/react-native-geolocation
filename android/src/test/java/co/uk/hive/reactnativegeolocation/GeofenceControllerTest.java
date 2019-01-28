@@ -1,10 +1,10 @@
 package co.uk.hive.reactnativegeolocation;
 
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-
+import co.uk.hive.reactnativegeolocation.geofence.Geofence;
+import co.uk.hive.reactnativegeolocation.geofence.GeofenceController;
+import co.uk.hive.reactnativegeolocation.geofence.GeofenceEngine;
+import co.uk.hive.reactnativegeolocation.geofence.GeofenceRepository;
 import com.annimon.stream.function.Function;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -13,6 +13,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @SuppressWarnings("Convert2Lambda")
 @RunWith(MockitoJUnitRunner.class)
@@ -45,6 +50,7 @@ public class GeofenceControllerTest {
         mSut.start(mCallback, mCallback);
 
         verify(mGeofenceEngine).addGeofences(mGeofences, mCallback, mCallback);
+        verify(mGeofenceRepository).setGeofencesActivated(true);
     }
 
     @Test
@@ -54,6 +60,18 @@ public class GeofenceControllerTest {
         mSut.stop(mCallback, mCallback);
 
         verify(mGeofenceEngine).removeGeofences(Arrays.asList("1", "2"), mCallback, mCallback);
+        verify(mGeofenceRepository).setGeofencesActivated(false);
+    }
+
+    @Test
+    public void restartsGeofences() {
+        given(mGeofenceRepository.getGeofences()).willReturn(mGeofences);
+        given(mGeofenceRepository.areGeofencesActivated()).willReturn(true);
+
+        mSut.restart(mCallback, mCallback);
+
+        verify(mGeofenceRepository).areGeofencesActivated();
+        verify(mGeofenceEngine).addGeofences(eq(mGeofences), any(), any());
     }
 
     @Test

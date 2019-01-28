@@ -1,4 +1,4 @@
-package co.uk.hive.reactnativegeolocation;
+package co.uk.hive.reactnativegeolocation.geofence;
 
 import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
@@ -18,13 +18,21 @@ public class GeofenceController {
     }
 
     public void start(Function<? super Object, ? super Object> successCallback, Function<? super Object, ? super Object> failureCallback) {
+        mGeofenceRepository.setGeofencesActivated(true);
         mGeofenceEngine.addGeofences(mGeofenceRepository.getGeofences(), successCallback, failureCallback);
     }
 
     public void stop(Function<? super Object, ? super Object> successCallback, Function<? super Object, ? super Object> failureCallback) {
+        mGeofenceRepository.setGeofencesActivated(false);
         List<String> geofenceIds = getGeofenceIds();
         if (!geofenceIds.isEmpty()) {
             mGeofenceEngine.removeGeofences(geofenceIds, successCallback, failureCallback);
+        }
+    }
+
+    public void restart(Function<? super Object, ? super Object> successCallback, Function<? super Object, ? super Object> failureCallback) {
+        if (mGeofenceRepository.areGeofencesActivated()) {
+            start(successCallback, failureCallback);
         }
     }
 

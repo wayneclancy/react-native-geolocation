@@ -1,15 +1,12 @@
 
 package co.uk.hive.reactnativegeolocation;
 
+import co.uk.hive.reactnativegeolocation.geofence.Geofence;
+import co.uk.hive.reactnativegeolocation.geofence.GeofenceController;
+import co.uk.hive.reactnativegeolocation.geofence.GeofenceServiceLocator;
 import com.annimon.stream.Stream;
 import com.annimon.stream.function.Function;
-import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.Callback;
-import com.facebook.react.bridge.ReadableArray;
-import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.*;
 
 import java.util.List;
 
