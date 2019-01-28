@@ -4,6 +4,7 @@ import android.content.Context;
 import co.uk.hive.reactnativegeolocation.BundleTypeAdapterFactory;
 import co.uk.hive.reactnativegeolocation.DataMarshaller;
 import co.uk.hive.reactnativegeolocation.DataStorage;
+import co.uk.hive.reactnativegeolocation.location.LocationController;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -14,6 +15,10 @@ public class GeofenceServiceLocator {
                 getGeofenceRepository(context),
                 getGeofenceActivator(context),
                 new ReRegistrationScheduler(context));
+    }
+
+    public static LocationController getLocationController(Context context) {
+        return new LocationController(context);
     }
 
     private static GeofenceRepository getGeofenceRepository(Context context) {
