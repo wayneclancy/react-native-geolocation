@@ -1,37 +1,40 @@
-import { NativeModules } from 'react-native';
+import { NativeModules, AppRegistry, DeviceEventEmitter } from 'react-native';
+
+const TAG = "BackgroundGeolocation"
+
+const { Geolocation } = NativeModules;
 
 export default class RNGeolocation {
 
-  static registerHeadlessTask() {
-    // TODO
+  static registerHeadlessTask(task) {
+    AppRegistry.registerHeadlessTask(TAG, () => task);
   }
 
-  static configure() {
-    // TODO
+  static ready() {
+    Geolocation.ready()
   }
 
-  static onGeofence() {
-    // TODO; see BackgroundGeolocation.on('geofence', ...)
+  static onGeofence(geofenceListener) {
+    DeviceEventEmitter.addListener('geofence', geofenceListener)
   }
 
-  static startGeofences() {
-    // TODO
+  static startGeofences(successCallback, failureCallback) {
+    Geolocation.startGeofences(successCallback, failureCallback)
   }
 
-  static stop() {
-    // TODO
+  static stop(successCallback, failureCallback) {
+    Geolocation.stopGeofences(successCallback, failureCallback)
   }
 
-  static addGeofence() {
-    // TODO
+  static addGeofences(geofences) {
+    Geolocation.addGeofences(geofences)
   }
 
-  static removeGeofence() {
-    // TODO
+  static removeGeofences() {
+    Geolocation.removeGeofences()
   }
 
-  static getCurrentPosition() {
-    // TODO
+  static getCurrentPosition(currentPositionRequest, successCallback, failureCallback) {
+    Geolocation.getCurrentPosition(currentPositionRequest, successCallback, failureCallback)
   }
-
 }
