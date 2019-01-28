@@ -1,12 +1,15 @@
 package co.uk.hive.reactnativegeolocation;
 
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import co.uk.hive.reactnativegeolocation.geofence.Geofence;
 import co.uk.hive.reactnativegeolocation.location.CurrentPositionRequest;
 import co.uk.hive.reactnativegeolocation.location.LatLng;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
+
+import java.util.List;
 
 public class RNMapper {
     Geofence readGeofence(ReadableMap map) {
@@ -18,8 +21,7 @@ public class RNMapper {
                 readBoolean(map,"notifyOnEntry", true),
                 readBoolean(map,"notifyOnExit", true),
                 readBoolean(map,"notifyOnDwell", false),
-                readInt(map,"loiteringDelay", 0),
-                readBundle(map, "extras"));
+                readInt(map,"loiteringDelay", 0));
     }
 
     WritableMap writeLocation(LatLng location) {
@@ -51,14 +53,46 @@ public class RNMapper {
     private static boolean readBoolean(ReadableMap map, String key, boolean defaultValue) {
         return map.hasKey(key) ? map.getBoolean(key) : defaultValue;
     }
-    private static Bundle readBundle(ReadableMap map, String key) {
-        return map.hasKey(key) ? Arguments.toBundle(map.getMap(key)) : Bundle.EMPTY;
-    }
 
     public WritableMap writeGeofenceTaskParams(String name, Bundle params) {
         Bundle args = new Bundle();
         args.putString("name", name);
         args.putBundle("params", params);
-        return Arguments.fromBundle(args);
+        return fromBundle(args);
+    }
+
+    public static WritableMap fromBundle(Bundle bundle) {
+        WritableMap map = Arguments.createMap();
+
+        for (String key : bundle.keySet()) {
+            Object value = bundle.get(key);
+            if (value == null) {
+                map.putNull(key);
+            } else if (value.getClass().isArray()) {
+                map.putArray(key, Arguments.fromArray(value));
+            } else if (value instanceof String) {
+                map.putString(key, (String) value);
+            } else if (value instanceof Number) {
+                if (value instanceof Integer) {
+                    map.putInt(key, (Integer) value);
+                } else {
+                    map.putDouble(key, ((Number) value).doubleValue());
+                }
+            } else if (value instanceof Boolean) {
+                map.putBoolean(key, (Boolean) value);
+            } else if (value instanceof Bundle) {
+                map.putMap(key, fromBundle((Bundle) value));
+            } else if (value instanceof PersistableBundle) {
+                map.putMap(key, fromBundle(new Bundle((PersistableBundle) value)));
+            } else {
+                if (!(value instanceof List)) {
+                    throw new IllegalArgumentException("Could not convert " + value.getClass());
+                }
+
+                map.putArray(key, Arguments.fromList((List) value));
+            }
+        }
+
+        return map;
     }
 }

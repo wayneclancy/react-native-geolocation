@@ -1,25 +1,24 @@
 package co.uk.hive.reactnativegeolocation.geofence;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import co.uk.hive.reactnativegeolocation.RNMapper;
-import com.facebook.react.HeadlessJsTaskService;
+import com.facebook.react.JobHeadlessJsTaskService;
 import com.facebook.react.jstasks.HeadlessJsTaskConfig;
-import uk.co.centrica.hive.reactnativegeolocation.R;
 
-public class GeofenceHeadlessJsTaskService extends HeadlessJsTaskService {
+public class GeofenceHeadlessJsTaskService extends JobHeadlessJsTaskService {
+
+    private static final int JOB_ID = 434;
 
     private static final String HEADLESS_TASK_NAME = "GeofenceEventTask";
     private static final String HEADLESS_TASK_ARGUMENT_NAME = "geofence";
-    public static final int NOTIFICATION_ID = 12;
-    public static final String NOTIFICATION_CHANNEL_ID = "notification_channel_headless_task_notification";
+    public static final int MAX_EXECUTION_DELAY_MILLIS = 1000;
 
     private RNMapper mRnMapper;
 
@@ -30,15 +29,9 @@ public class GeofenceHeadlessJsTaskService extends HeadlessJsTaskService {
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        showOreoNotification();
-        return super.onStartCommand(intent, flags, startId);
-    }
-
-    @Override
     protected @Nullable
-    HeadlessJsTaskConfig getTaskConfig(Intent intent) {
-        Bundle extras = intent.getExtras();
+    HeadlessJsTaskConfig getTaskConfig(Bundle extras) {
+        Log.d(getClass().getSimpleName(), "Running GeofenceHeadlessJsTaskService");
         if (extras != null) {
             return new HeadlessJsTaskConfig(
                     HEADLESS_TASK_NAME,
@@ -50,24 +43,18 @@ public class GeofenceHeadlessJsTaskService extends HeadlessJsTaskService {
         return null;
     }
 
-    public static void start(Context context, Bundle params) {
-        Intent intent = new Intent(context, GeofenceHeadlessJsTaskService.class).putExtras(params);
-        HeadlessJsTaskService.acquireWakeLockNow(context);
-        ContextCompat.startForegroundService(context, intent);
-    }
-
-    private void showOreoNotification() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            if (nm != null && nm.getNotificationChannel(NOTIFICATION_CHANNEL_ID) == null) {
-                nm.createNotificationChannel(new NotificationChannel(NOTIFICATION_CHANNEL_ID,
-                        getString(R.string.headless_notification_channel_name),
-                        NotificationManager.IMPORTANCE_MIN));
-            }
-            startForeground(NOTIFICATION_ID, new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-                    .setSmallIcon(R.drawable.ic_notification)
-                    .setContentText(getString(R.string.headless_notification_processing))
-                    .build());
+    public static void start(Context context, PersistableBundle params) {
+        JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        if (jobScheduler != null) {
+            jobScheduler.schedule(buildJobInfo(context, params));
         }
     }
+
+    private static JobInfo buildJobInfo(Context context, PersistableBundle params) {
+        return new JobInfo.Builder(JOB_ID, new ComponentName(context, GeofenceHeadlessJsTaskService.class))
+                .setExtras(params)
+                .setOverrideDeadline(MAX_EXECUTION_DELAY_MILLIS)
+                .build();
+    }
 }
+

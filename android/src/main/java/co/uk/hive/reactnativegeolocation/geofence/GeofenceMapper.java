@@ -1,27 +1,26 @@
 package co.uk.hive.reactnativegeolocation.geofence;
 
 import android.location.Location;
-import android.os.Bundle;
+import android.os.PersistableBundle;
 import com.google.android.gms.location.GeofencingEvent;
 
 import static com.google.android.gms.location.Geofence.*;
 
 class GeofenceMapper {
-    Bundle toBundle(GeofencingEvent event, Geofence geofence) {
-        Bundle bundle = new Bundle();
+    PersistableBundle toBundle(GeofencingEvent event, Geofence geofence) {
+        PersistableBundle bundle = new PersistableBundle();
         bundle.putString("action", getGeofenceAction(event.getGeofenceTransition()));
         bundle.putString("identifier", geofence.getId());
-        bundle.putBundle("extras", geofence.getExtras());
-        bundle.putBundle("location", getLocationBundle(event.getTriggeringLocation()));
+        bundle.putPersistableBundle("location", getLocationBundle(event.getTriggeringLocation()));
         return bundle;
     }
 
-    private Bundle getLocationBundle(Location triggeringLocation) {
-        Bundle bundle = new Bundle();
-        Bundle coordsBundle = new Bundle();
+    private PersistableBundle getLocationBundle(Location triggeringLocation) {
+        PersistableBundle bundle = new PersistableBundle();
+        PersistableBundle coordsBundle = new PersistableBundle();
         coordsBundle.putDouble("latitude", triggeringLocation.getLatitude());
         coordsBundle.putDouble("longitude", triggeringLocation.getLongitude());
-        bundle.putBundle("coords", coordsBundle);
+        bundle.putPersistableBundle("coords", coordsBundle);
         return bundle;
     }
 

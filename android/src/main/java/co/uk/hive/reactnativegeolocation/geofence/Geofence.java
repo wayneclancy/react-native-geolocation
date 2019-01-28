@@ -1,7 +1,5 @@
 package co.uk.hive.reactnativegeolocation.geofence;
 
-import android.os.Bundle;
-
 @SuppressWarnings("WeakerAccess")
 public class Geofence {
     private final String mId;
@@ -12,10 +10,9 @@ public class Geofence {
     private final boolean mNotifyOnExit;
     private final boolean mNotifyOnDwell;
     private final int mLoiteringDelay;
-    private Bundle mExtras;
 
     public Geofence(String id, int radius, double latitude, double longitude, boolean notifyOnEnter,
-            boolean notifyOnExit, boolean notifyOnDwell, int loiteringDelay, Bundle extras) {
+            boolean notifyOnExit, boolean notifyOnDwell, int loiteringDelay) {
         mId = id;
         mRadius = radius;
         mLatitude = latitude;
@@ -24,7 +21,6 @@ public class Geofence {
         mNotifyOnExit = notifyOnExit;
         mNotifyOnDwell = notifyOnDwell;
         mLoiteringDelay = loiteringDelay;
-        mExtras = extras;
     }
 
     public String getId() {
@@ -59,10 +55,6 @@ public class Geofence {
         return mLoiteringDelay;
     }
 
-    public Bundle getExtras() {
-        return mExtras;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -77,8 +69,7 @@ public class Geofence {
         if (mNotifyOnExit != geofence.mNotifyOnExit) return false;
         if (mNotifyOnDwell != geofence.mNotifyOnDwell) return false;
         if (mLoiteringDelay != geofence.mLoiteringDelay) return false;
-        if (!mId.equals(geofence.mId)) return false;
-        return mExtras != null ? mExtras.equals(geofence.mExtras) : geofence.mExtras == null;
+        return mId.equals(geofence.mId);
     }
 
     @Override
@@ -95,7 +86,6 @@ public class Geofence {
         result = 31 * result + (mNotifyOnExit ? 1 : 0);
         result = 31 * result + (mNotifyOnDwell ? 1 : 0);
         result = 31 * result + mLoiteringDelay;
-        result = 31 * result + (mExtras != null ? mExtras.hashCode() : 0);
         return result;
     }
 }

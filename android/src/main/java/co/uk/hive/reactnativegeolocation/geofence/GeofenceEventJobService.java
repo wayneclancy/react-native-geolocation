@@ -3,6 +3,7 @@ package co.uk.hive.reactnativegeolocation.geofence;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.JobIntentService;
 import android.util.Log;
@@ -56,7 +57,7 @@ public class GeofenceEventJobService extends JobIntentService {
     }
 
     private void sendEvent(Geofence geofence, GeofencingEvent event) {
-        Bundle bundle = mGeofenceMapper.toBundle(event, geofence);
+        PersistableBundle bundle = mGeofenceMapper.toBundle(event, geofence);
         if (mForegroundChecker.isAppInForeground()) {
             emitRNEvent(bundle);
         } else {
@@ -64,15 +65,15 @@ public class GeofenceEventJobService extends JobIntentService {
         }
     }
 
-    private void emitRNEvent(Bundle bundle) {
+    private void emitRNEvent(PersistableBundle bundle) {
         ReactNativeHost reactNativeHost = ((ReactApplication) getApplication()).getReactNativeHost();
         ReactInstanceManager reactInstanceManager = reactNativeHost.getReactInstanceManager();
         //noinspection ConstantConditions
         reactInstanceManager.getCurrentReactContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit(GEOFENCE_EVENT_NAME, Arguments.fromBundle(bundle));
+                .emit(GEOFENCE_EVENT_NAME, Arguments.fromBundle(new Bundle(bundle)));
     }
 
-    private void runHeadlessJsTask(Bundle bundle) {
+    private void runHeadlessJsTask(PersistableBundle bundle) {
         GeofenceHeadlessJsTaskService.start(this, bundle);
     }
 }
