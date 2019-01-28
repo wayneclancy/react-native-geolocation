@@ -1,38 +1,9 @@
+import { Platform } from 'react-native';
+import GeolocationIOS from './index.ios.js';
+import GeolocationAndroid from './index.android.js';
 
-import { NativeModules } from 'react-native';
+const Geolocation = Platform.OS === 'ios'
+  ? GeolocationIOS
+  : GeolocationAndroid;
 
-export default class RNGeolocation {
-
-  static registerHeadlessTask() {
-    // TODO
-  }
-
-  static configure() {
-    // TODO
-  }
-
-  static onGeofence() {
-    // TODO; see BackgroundGeolocation.on('geofence', ...)
-  }
-
-  static startGeofences() {
-    // TODO
-  }
-
-  static stop() {
-    // TODO
-  }
-
-  static addGeofence() {
-    // TODO
-  }
-
-  static removeGeofence() {
-    // TODO
-  }
-
-  static getCurrentPosition() {
-    // TODO
-  }
-
-}
+export default Geolocation;

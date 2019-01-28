@@ -22,4 +22,4 @@ export const onGeofence = BG.onGeofence;
 export const registerHeadlessTask = BG.registerHeadlessTask;
 
 // https://transistorsoft.github.io/react-native-background-geolocation/classes/_react_native_background_geolocation_.backgroundgeolocation.html#getcurrentposition
-export const getCurrentPosition = Bg.getCurrentPosition;
+export const getCurrentPosition = BG.getCurrentPosition;
