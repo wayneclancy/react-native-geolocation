@@ -4,6 +4,9 @@ package co.uk.hive.reactnativegeolocation;
 import co.uk.hive.reactnativegeolocation.geofence.Geofence;
 import co.uk.hive.reactnativegeolocation.geofence.GeofenceController;
 import co.uk.hive.reactnativegeolocation.geofence.GeofenceServiceLocator;
+import co.uk.hive.reactnativegeolocation.location.CurrentPositionRequest;
+import co.uk.hive.reactnativegeolocation.location.LatLng;
+import co.uk.hive.reactnativegeolocation.location.LocationController;
 import com.annimon.stream.Stream;
 import com.annimon.stream.function.Function;
 import com.facebook.react.bridge.*;
@@ -14,11 +17,13 @@ public class RNGeolocationModule extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private final GeofenceController mGeofenceController;
+    private final LocationController mLocationController;
 
     public RNGeolocationModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
         mGeofenceController = GeofenceServiceLocator.getGeofenceController(reactContext.getApplicationContext());
+        mLocationController = GeofenceServiceLocator.getLocationController(reactContext.getApplicationContext());
     }
 
     @Override
@@ -53,7 +58,21 @@ public class RNGeolocationModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getCurrentPosition(ReadableMap currentPositionRequest,
             Callback successCallback, Callback failureCallback) {
-        // TODO
+        Function<LatLng, Object> positionCallback = location -> {
+            successCallback.invoke(writeLocation(location));
+            return null;
+        };
+        mLocationController.getCurrentPosition(
+                readPositionRequest(currentPositionRequest), positionCallback, convertCallback(failureCallback));
+    }
+
+    private WritableMap writeLocation(LatLng location) {
+        WritableMap coords = Arguments.createMap();
+        coords.putDouble("latitude", location.getLatitude());
+        coords.putDouble("longitude", location.getLongitude());
+        WritableMap result = Arguments.createMap();
+        result.putMap("coords", coords);
+        return result;
     }
 
     private Geofence readGeofence(ReadableMap readableMap) {
@@ -68,6 +87,10 @@ public class RNGeolocationModule extends ReactContextBaseJavaModule {
                 readableMap.getInt("loiteringDelay"),
                 Arguments.toBundle(readableMap.getMap("extras"))
         );
+    }
+
+    private CurrentPositionRequest readPositionRequest(ReadableMap readableMap) {
+        return new CurrentPositionRequest(readableMap.getInt("timeout"));
     }
 
     private <T> Function<T, Object> convertCallback(Callback callback) {
