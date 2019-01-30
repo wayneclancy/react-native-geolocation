@@ -61,7 +61,7 @@ public class RNMapper {
         return fromBundle(args);
     }
 
-    public static WritableMap fromBundle(Bundle bundle) {
+    public WritableMap fromBundle(Bundle bundle) {
         WritableMap map = Arguments.createMap();
 
         for (String key : bundle.keySet()) {
