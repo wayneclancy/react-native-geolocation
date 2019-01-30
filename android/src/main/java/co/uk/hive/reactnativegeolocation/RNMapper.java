@@ -8,7 +8,7 @@ import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 
-class RNMapper {
+public class RNMapper {
     Geofence readGeofence(ReadableMap map) {
         return new Geofence(
                 readString(map,"identifier", null),
@@ -53,5 +53,12 @@ class RNMapper {
     }
     private static Bundle readBundle(ReadableMap map, String key) {
         return map.hasKey(key) ? Arguments.toBundle(map.getMap(key)) : Bundle.EMPTY;
+    }
+
+    public WritableMap writeGeofenceTaskParams(String name, Bundle params) {
+        Bundle args = new Bundle();
+        args.putString("name", name);
+        args.putBundle("params", params);
+        return Arguments.fromBundle(args);
     }
 }
