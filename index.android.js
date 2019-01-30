@@ -1,8 +1,7 @@
 import { NativeModules, AppRegistry, DeviceEventEmitter } from 'react-native';
 
 const TAG = "BackgroundGeolocation"
-
-const { Geolocation } = NativeModules;
+const emptyFn = () => {}
 
 export default class RNGeolocation {
 
@@ -10,31 +9,71 @@ export default class RNGeolocation {
     AppRegistry.registerHeadlessTask(TAG, () => task);
   }
 
-  static ready() {
-    Geolocation.ready()
+  static ready(config) {
+      return new Promise((resolve, reject) => {
+        NativeModules.RNGeolocation.ready();
+        resolve();
+      });
   }
 
   static onGeofence(geofenceListener) {
-    DeviceEventEmitter.addListener('geofence', geofenceListener)
+    DeviceEventEmitter.addListener('geofence', geofenceListener);
   }
 
   static startGeofences(successCallback, failureCallback) {
-    Geolocation.startGeofences(successCallback, failureCallback)
+    let promise = new Promise((resolve, reject) => {
+      let success = ()      => { resolve() }
+      let failure = (error) => { reject(error) }
+      NativeModules.RNGeolocation.startGeofences(success, failure);
+    });
+    if (!arguments.length) {
+      return promise;
+    } else {
+        return promise.then(successCallback).catch(failureCallback);
+    }
   }
 
   static stop(successCallback, failureCallback) {
-    Geolocation.stopGeofences(successCallback, failureCallback)
+    let promise = new Promise((resolve, reject) => {
+      let success = ()      => { resolve() }
+      let failure = (error) => { reject(error) }
+      NativeModules.RNGeolocation.stopGeofences(success, failure);
+    });
+    if (!arguments.length) {
+      return promise;
+    } else {
+        return promise.then(successCallback).catch(failureCallback);
+    }
+  }
+
+  static stopGeofences(successCallback, failureCallback) {
+    return RNGeolocation.stop(successCallback, failureCallback);
   }
 
   static addGeofences(geofences) {
-    Geolocation.addGeofences(geofences)
+    return new Promise((resolve, reject) => {
+        NativeModules.RNGeolocation.addGeofences(geofences);
+        resolve();
+      });
   }
 
   static removeGeofences() {
-    Geolocation.removeGeofences()
+    return new Promise((resolve, reject) => {
+      NativeModules.RNGeolocation.removeGeofences();
+      resolve();
+    });
   }
 
   static getCurrentPosition(currentPositionRequest, successCallback, failureCallback) {
-    Geolocation.getCurrentPosition(currentPositionRequest, successCallback, failureCallback)
+    let promise = new Promise((resolve, reject) => {
+            let success = (location)     => { resolve(location) }
+            let failure = (error)        => { reject(error) }
+            NativeModules.RNGeolocation.getCurrentPosition(currentPositionRequest || {}, success, failure);
+        });
+    if (arguments.length == 1) {
+      return promise;
+    } else {
+      return promise.then(successCallback).catch(failureCallback);
+    }
   }
 }

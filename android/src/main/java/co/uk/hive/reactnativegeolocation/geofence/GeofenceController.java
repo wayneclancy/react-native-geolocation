@@ -1,6 +1,7 @@
 package co.uk.hive.reactnativegeolocation.geofence;
 
 import android.os.Build;
+import android.util.Log;
 import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
 import com.annimon.stream.function.Function;
@@ -25,11 +26,19 @@ public class GeofenceController {
     }
 
     public void start(Function<? super Object, ? super Object> successCallback, Function<? super Object, ? super Object> failureCallback) {
+        if (mGeofenceRepository.getGeofences().isEmpty()) {
+            Log.w(getClass().getSimpleName(), "Starting geofences with none set, exiting");
+            return;
+        }
         mGeofenceActivator.setGeofencesActivated(true);
         mGeofenceEngine.addGeofences(mGeofenceRepository.getGeofences(), successCallback, failureCallback);
     }
 
     public void stop(Function<? super Object, ? super Object> successCallback, Function<? super Object, ? super Object> failureCallback) {
+        if (mGeofenceRepository.getGeofences().isEmpty()) {
+            Log.w(getClass().getSimpleName(), "Stopping geofences with none set, exiting");
+            return;
+        }
         mGeofenceActivator.setGeofencesActivated(false);
         List<String> geofenceIds = getGeofenceIds();
         if (!geofenceIds.isEmpty()) {
