@@ -4,7 +4,6 @@ package co.uk.hive.reactnativegeolocation;
 import co.uk.hive.reactnativegeolocation.geofence.Geofence;
 import co.uk.hive.reactnativegeolocation.geofence.GeofenceController;
 import co.uk.hive.reactnativegeolocation.geofence.GeofenceServiceLocator;
-import co.uk.hive.reactnativegeolocation.location.CurrentPositionRequest;
 import co.uk.hive.reactnativegeolocation.location.LatLng;
 import co.uk.hive.reactnativegeolocation.location.LocationController;
 import com.annimon.stream.Stream;
@@ -18,12 +17,14 @@ public class RNGeolocationModule extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private final GeofenceController mGeofenceController;
     private final LocationController mLocationController;
+    private final RNMapper mRnMapper;
 
     public RNGeolocationModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
         mGeofenceController = GeofenceServiceLocator.getGeofenceController(reactContext.getApplicationContext());
         mLocationController = GeofenceServiceLocator.getLocationController(reactContext.getApplicationContext());
+        mRnMapper = new RNMapper();
     }
 
     @Override
@@ -50,7 +51,7 @@ public class RNGeolocationModule extends ReactContextBaseJavaModule {
     public void addGeofences(ReadableArray geofencesArray) {
         List<Geofence> geofences = Stream.range(0, geofencesArray.size())
                 .map(geofencesArray::getMap)
-                .map(this::readGeofence)
+                .map(mRnMapper::readGeofence)
                 .toList();
         mGeofenceController.addGeofences(geofences);
     }
@@ -64,38 +65,11 @@ public class RNGeolocationModule extends ReactContextBaseJavaModule {
     public void getCurrentPosition(ReadableMap currentPositionRequest,
             Callback successCallback, Callback failureCallback) {
         Function<LatLng, Object> positionCallback = location -> {
-            successCallback.invoke(writeLocation(location));
+            successCallback.invoke(mRnMapper.writeLocation(location));
             return null;
         };
         mLocationController.getCurrentPosition(
-                readPositionRequest(currentPositionRequest), positionCallback, convertCallback(failureCallback));
-    }
-
-    private WritableMap writeLocation(LatLng location) {
-        WritableMap coords = Arguments.createMap();
-        coords.putDouble("latitude", location.getLatitude());
-        coords.putDouble("longitude", location.getLongitude());
-        WritableMap result = Arguments.createMap();
-        result.putMap("coords", coords);
-        return result;
-    }
-
-    private Geofence readGeofence(ReadableMap readableMap) {
-        return new Geofence(
-                readableMap.getString("identifier"),
-                readableMap.getInt("radius"),
-                readableMap.getDouble("latitude"),
-                readableMap.getDouble("longitude"),
-                readableMap.getBoolean("notifyOnEntry"),
-                readableMap.getBoolean("notifyOnExit"),
-                readableMap.getBoolean("notifyOnDwell"),
-                readableMap.getInt("loiteringDelay"),
-                Arguments.toBundle(readableMap.getMap("extras"))
-        );
-    }
-
-    private CurrentPositionRequest readPositionRequest(ReadableMap readableMap) {
-        return new CurrentPositionRequest(readableMap.getInt("timeout"));
+                mRnMapper.readPositionRequest(currentPositionRequest), positionCallback, convertCallback(failureCallback));
     }
 
     private <T> Function<T, Object> convertCallback(Callback callback) {

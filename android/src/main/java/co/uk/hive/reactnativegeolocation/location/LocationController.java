@@ -56,7 +56,6 @@ public class LocationController {
     private LocationRequest getLocationRequest(CurrentPositionRequest currentPositionRequest) {
         return new LocationRequest()
                 .setNumUpdates(1)
-                .setExpirationDuration(currentPositionRequest.getTimeout() * 1000)
                 .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
     }
 }
