@@ -1,7 +1,6 @@
 import { NativeModules, AppRegistry, DeviceEventEmitter } from 'react-native';
 
-const TAG = "BackgroundGeolocation"
-const emptyFn = () => {}
+const TAG = "GeofenceEventTask"
 
 export default class RNGeolocation {
 
