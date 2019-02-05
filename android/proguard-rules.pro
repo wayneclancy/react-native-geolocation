@@ -1,0 +1,1 @@
+-keep co.uk.hive.reactnativegeolocation.*;
