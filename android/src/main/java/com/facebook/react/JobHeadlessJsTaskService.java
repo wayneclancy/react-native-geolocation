@@ -22,9 +22,11 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public abstract class JobHeadlessJsTaskService extends JobService implements HeadlessJsTaskEventListener {
 
     private final Set<Integer> mActiveTasks = new CopyOnWriteArraySet<>();
+    private JobParameters mJobParameters;
 
     @Override
     public boolean onStartJob(JobParameters jobParameters) {
+        mJobParameters = jobParameters;
         Bundle jobParams = new Bundle();
         jobParams.putAll(jobParameters.getExtras());
         HeadlessJsTaskConfig taskConfig = getTaskConfig(jobParams);
@@ -113,7 +115,7 @@ public abstract class JobHeadlessJsTaskService extends JobService implements Hea
     public void onHeadlessJsTaskFinish(int taskId) {
         mActiveTasks.remove(taskId);
         if (mActiveTasks.size() == 0) {
-            stopSelf();
+            jobFinished(mJobParameters, false);
         }
     }
 
