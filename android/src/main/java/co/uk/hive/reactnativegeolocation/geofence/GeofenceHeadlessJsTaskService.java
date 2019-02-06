@@ -53,8 +53,8 @@ public class GeofenceHeadlessJsTaskService extends JobHeadlessJsTaskService {
     private static JobInfo buildJobInfo(Context context, PersistableBundle params) {
         return new JobInfo.Builder(JOB_ID, new ComponentName(context, GeofenceHeadlessJsTaskService.class))
                 .setExtras(params)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .setOverrideDeadline(MAX_EXECUTION_DELAY_MILLIS)
                 .build();
     }
 }
-
