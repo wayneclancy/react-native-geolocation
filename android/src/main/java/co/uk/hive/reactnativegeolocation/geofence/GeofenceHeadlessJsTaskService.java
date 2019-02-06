@@ -37,7 +37,7 @@ public class GeofenceHeadlessJsTaskService extends JobHeadlessJsTaskService {
                     HEADLESS_TASK_NAME,
                     mRnMapper.writeGeofenceTaskParams(HEADLESS_TASK_ARGUMENT_NAME, extras),
                     5000,
-                    false
+                    true
             );
         }
         return null;
