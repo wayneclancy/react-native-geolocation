@@ -28,6 +28,7 @@ public class GeofenceEventBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        PersistentLog.log("Geofence broadcast received: " + intent.toString());
         if (mGeofenceController == null) {
             mGeofenceController = GeofenceServiceLocator.getGeofenceController(context.getApplicationContext());
         }
@@ -61,6 +62,7 @@ public class GeofenceEventBroadcastReceiver extends BroadcastReceiver {
     }
 
     private void emitRNEvent(Context context, PersistableBundle bundle) {
+        PersistentLog.log("Geofence broadcast emits event: " + bundle.toString());
         ReactNativeHost reactNativeHost = ((ReactApplication) context.getApplicationContext()).getReactNativeHost();
         ReactInstanceManager reactInstanceManager = reactNativeHost.getReactInstanceManager();
         //noinspection ConstantConditions

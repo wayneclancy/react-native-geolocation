@@ -4,6 +4,7 @@ import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
@@ -29,9 +30,14 @@ public class GeofenceHeadlessJsTaskService extends JobHeadlessJsTaskService {
     }
 
     @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(getClass().getSimpleName(), "GeofenceHeadlessJsTaskService onStartCommand");
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
     protected @Nullable
     HeadlessJsTaskConfig getTaskConfig(Bundle extras) {
-        Log.d(getClass().getSimpleName(), "Running GeofenceHeadlessJsTaskService");
         if (extras != null) {
             return new HeadlessJsTaskConfig(
                     HEADLESS_TASK_NAME,
@@ -46,6 +52,7 @@ public class GeofenceHeadlessJsTaskService extends JobHeadlessJsTaskService {
     public static void start(Context context, PersistableBundle params) {
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         if (jobScheduler != null) {
+            PersistentLog.log("Scheduling GeofenceHeadlessJsTaskService: " + params.toString());
             jobScheduler.schedule(buildJobInfo(context, params));
         }
     }
@@ -54,7 +61,7 @@ public class GeofenceHeadlessJsTaskService extends JobHeadlessJsTaskService {
         return new JobInfo.Builder(JOB_ID, new ComponentName(context, GeofenceHeadlessJsTaskService.class))
                 .setExtras(params)
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                .setOverrideDeadline(MAX_EXECUTION_DELAY_MILLIS)
+                .setPersisted(true)
                 .build();
     }
 }
