@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import co.uk.hive.reactnativegeolocation.RNMapper;
 import com.facebook.react.JobHeadlessJsTaskService;
 import com.facebook.react.jstasks.HeadlessJsTaskConfig;
@@ -31,22 +30,24 @@ public class GeofenceHeadlessJsTaskService extends JobHeadlessJsTaskService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(getClass().getSimpleName(), "GeofenceHeadlessJsTaskService onStartCommand");
+        PersistentLog.log("GeofenceHeadlessJsTaskService onStartCommand");
         return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     protected @Nullable
     HeadlessJsTaskConfig getTaskConfig(Bundle extras) {
+        HeadlessJsTaskConfig config = null;
         if (extras != null) {
-            return new HeadlessJsTaskConfig(
+            config = new HeadlessJsTaskConfig(
                     HEADLESS_TASK_NAME,
                     mRnMapper.writeGeofenceTaskParams(HEADLESS_TASK_ARGUMENT_NAME, extras),
                     5000,
                     true
             );
         }
-        return null;
+        PersistentLog.log("GeofenceHeadlessJsTaskService getTaskConfig returns " + config);
+        return config;
     }
 
     public static void start(Context context, PersistableBundle params) {

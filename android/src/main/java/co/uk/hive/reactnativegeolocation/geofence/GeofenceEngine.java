@@ -58,7 +58,10 @@ public class GeofenceEngine {
 
         mGeofencingClient.addGeofences(
                 geofencingRequest, mPendingIntent)
-                .addOnSuccessListener(successCallback::apply)
+                .addOnSuccessListener(none -> {
+                    successCallback.apply(none);
+                    PersistentLog.log("Geofences add success");
+                })
                 .addOnFailureListener(failureCallback::apply);
     }
 
@@ -76,6 +79,6 @@ public class GeofenceEngine {
     }
 
     private int defineInitialTrigger() {
-        return 0; // do not notify at the moment of setting the geofence
+        return GeofencingRequest.INITIAL_TRIGGER_ENTER | GeofencingRequest.INITIAL_TRIGGER_EXIT; // do not notify at the moment of setting the geofence
     }
 }
