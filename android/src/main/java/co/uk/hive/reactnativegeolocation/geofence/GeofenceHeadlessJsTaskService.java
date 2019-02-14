@@ -18,7 +18,6 @@ public class GeofenceHeadlessJsTaskService extends JobHeadlessJsTaskService {
 
     private static final String HEADLESS_TASK_NAME = "GeofenceEventTask";
     private static final String HEADLESS_TASK_ARGUMENT_NAME = "geofence";
-    public static final int MAX_EXECUTION_DELAY_MILLIS = 1000;
 
     private RNMapper mRnMapper;
 
@@ -54,7 +53,7 @@ public class GeofenceHeadlessJsTaskService extends JobHeadlessJsTaskService {
         return new JobInfo.Builder(JOB_ID, new ComponentName(context, GeofenceHeadlessJsTaskService.class))
                 .setExtras(params)
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                .setOverrideDeadline(MAX_EXECUTION_DELAY_MILLIS)
+                .setPersisted(true)
                 .build();
     }
 }
