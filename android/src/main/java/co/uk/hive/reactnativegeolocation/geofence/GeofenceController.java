@@ -2,6 +2,7 @@ package co.uk.hive.reactnativegeolocation.geofence;
 
 import android.os.Build;
 import android.util.Log;
+
 import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
 import com.annimon.stream.function.Function;
@@ -14,15 +15,18 @@ public class GeofenceController {
     private final GeofenceRepository mGeofenceRepository;
     private final GeofenceActivator mGeofenceActivator;
     private final ReRegistrationScheduler mReRegistrationScheduler;
+    private final FailedReRegistrationChecker mFailedReRegistrationChecker;
 
     GeofenceController(GeofenceEngine geofenceEngine,
-            GeofenceRepository geofenceRepository,
+                       GeofenceRepository geofenceRepository,
                        GeofenceActivator geofenceActivator,
-                       ReRegistrationScheduler reRegistrationScheduler) {
+                       ReRegistrationScheduler reRegistrationScheduler,
+                       FailedReRegistrationChecker failedReRegistrationChecker) {
         mGeofenceEngine = geofenceEngine;
         mGeofenceRepository = geofenceRepository;
         mGeofenceActivator = geofenceActivator;
         mReRegistrationScheduler = reRegistrationScheduler;
+        mFailedReRegistrationChecker = failedReRegistrationChecker;
     }
 
     public void start(Function<? super Object, ? super Object> successCallback, Function<? super Object, ? super Object> failureCallback) {
@@ -71,8 +75,13 @@ public class GeofenceController {
     }
 
     public void setupReregistration() {
+        // Implicit broadcast would be triggered but when permissions are
+        // disabled, then geofences are not re-added. So we need to re-run
+        // the logic anyway in case permissions have been granted.
+        mFailedReRegistrationChecker.retry();
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             mReRegistrationScheduler.scheduleReRegistration();
-        } // else: implicit broadcast will be triggered
+        }
     }
 }
