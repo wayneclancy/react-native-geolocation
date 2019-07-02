@@ -15,7 +15,7 @@ public class ReRegisterGeofencesOreoJobService extends JobService {
     @Override
     public boolean onStartJob(JobParameters jobParameters) {
         LocationChecker locationChecker = new LocationChecker(this);
-        if (locationChecker.isLocationEnabled()) {
+        if (locationChecker.isLocationEnabled() && isLocationPermissionGranted()) {
             GeofenceController geofenceController = GeofenceServiceLocator.getGeofenceController(this);
             geofenceController.restart(mEmptyCallback, mEmptyCallback);
         }
@@ -27,6 +27,11 @@ public class ReRegisterGeofencesOreoJobService extends JobService {
 
     @Override
     public boolean onStopJob(JobParameters jobParameters) {
+        return false;
+    }
+
+    private boolean isLocationPermissionGranted() {
+        // TODO
         return false;
     }
 }

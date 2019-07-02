@@ -47,6 +47,10 @@ public class ReRegisterGeofencesReceiver extends BroadcastReceiver {
             return;
         }
 
+        if (!isLocationPermissionGranted()) {
+            return;
+        }
+
         GeofenceController geofenceController = GeofenceServiceLocator.getGeofenceController(context);
         geofenceController.restart(mEmptyCallback, mEmptyCallback);
     }
@@ -80,5 +84,10 @@ public class ReRegisterGeofencesReceiver extends BroadcastReceiver {
         NOT_CHANGED,
         CHANGED_TO_ENABLED,
         CHANGED_TO_DISABLED,
+    }
+
+    private boolean isLocationPermissionGranted() {
+        // TODO
+        return false;
     }
 }
