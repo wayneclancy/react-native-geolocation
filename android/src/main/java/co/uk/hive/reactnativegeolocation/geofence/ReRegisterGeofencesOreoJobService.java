@@ -5,6 +5,8 @@ import android.app.job.JobService;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import co.uk.hive.reactnativegeolocation.LocationChecker;
+import co.uk.hive.reactnativegeolocation.PermissionChecker;
+
 import com.annimon.stream.function.Function;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
@@ -31,7 +33,6 @@ public class ReRegisterGeofencesOreoJobService extends JobService {
     }
 
     private boolean isLocationPermissionGranted() {
-        // TODO
-        return false;
+        return new PermissionChecker(this).isLocationPermissionGranted();
     }
 }

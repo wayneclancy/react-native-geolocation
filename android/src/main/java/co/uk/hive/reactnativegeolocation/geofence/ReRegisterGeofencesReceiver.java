@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.location.LocationManager;
 import android.net.Uri;
 
+import co.uk.hive.reactnativegeolocation.LocationChecker;
+import co.uk.hive.reactnativegeolocation.PermissionChecker;
+
 import com.annimon.stream.Stream;
 import com.annimon.stream.function.Function;
 
@@ -47,7 +50,7 @@ public class ReRegisterGeofencesReceiver extends BroadcastReceiver {
             return;
         }
 
-        if (!isLocationPermissionGranted()) {
+        if (!isLocationPermissionGranted(context)) {
             return;
         }
 
@@ -86,8 +89,7 @@ public class ReRegisterGeofencesReceiver extends BroadcastReceiver {
         CHANGED_TO_DISABLED,
     }
 
-    private boolean isLocationPermissionGranted() {
-        // TODO
-        return false;
+    private boolean isLocationPermissionGranted(Context context) {
+        return new PermissionChecker(context).isLocationPermissionGranted();
     }
 }
