@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.location.LocationManager;
 import android.net.Uri;
 
+import co.uk.hive.reactnativegeolocation.LocationChecker;
+import co.uk.hive.reactnativegeolocation.PermissionChecker;
+
 import com.annimon.stream.Stream;
 import com.annimon.stream.function.Function;
 
@@ -47,6 +50,12 @@ public class ReRegisterGeofencesReceiver extends BroadcastReceiver {
             return;
         }
 
+        if (!isLocationPermissionGranted(context)) {
+            GeofenceLog.d("Location permission not granted. Cannot restart geofencing");
+            return;
+        }
+
+        GeofenceLog.d("Attempting to restart geofences due to: " + intent.getAction());
         GeofenceController geofenceController = GeofenceServiceLocator.getGeofenceController(context);
         geofenceController.restart(mEmptyCallback, mEmptyCallback);
     }
@@ -80,5 +89,9 @@ public class ReRegisterGeofencesReceiver extends BroadcastReceiver {
         NOT_CHANGED,
         CHANGED_TO_ENABLED,
         CHANGED_TO_DISABLED,
+    }
+
+    private boolean isLocationPermissionGranted(Context context) {
+        return new PermissionChecker(context).isLocationPermissionGranted();
     }
 }
