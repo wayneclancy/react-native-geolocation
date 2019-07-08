@@ -23,6 +23,7 @@ public class RestartGeofencingCommand {
 
     public void run() {
         if (!isLocationPermissionGranted()) {
+            GeofenceLog.d("Location permission not granted. Cannot restart geofencing.");
             mGeofenceActivator.setFailedReRegistration(true);
             return;
         }

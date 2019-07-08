@@ -44,6 +44,7 @@ public class ReRegisterGeofencesReceiver extends BroadcastReceiver {
             return;
         }
 
+        GeofenceLog.d("Attempting to restart geofences due to: " + intent.getAction());
         GeofenceServiceLocator.getRestartGeofencingCommand(context).run();
     }
 

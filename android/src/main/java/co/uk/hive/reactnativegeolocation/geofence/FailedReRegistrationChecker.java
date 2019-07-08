@@ -13,6 +13,7 @@ public class FailedReRegistrationChecker {
 
     public void retry() {
         if (isFailedBroadcastReregistration()) {
+            GeofenceLog.d("Failed broadcast re-registration. Attempting to restart geofencing");
             mRestartGeofencingCommandSupplier.get().run();
         }
     }
