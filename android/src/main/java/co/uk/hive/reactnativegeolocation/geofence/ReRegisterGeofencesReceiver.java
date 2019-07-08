@@ -5,11 +5,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.net.Uri;
-import co.uk.hive.reactnativegeolocation.LocationChecker;
+
 import com.annimon.stream.Stream;
 import com.annimon.stream.function.Function;
 
 import java.util.Objects;
+
+import co.uk.hive.reactnativegeolocation.LocationChecker;
+
+import static co.uk.hive.reactnativegeolocation.geofence.ReRegisterGeofencesReceiver.LocationChangeResult.CHANGED_TO_DISABLED;
+import static co.uk.hive.reactnativegeolocation.geofence.ReRegisterGeofencesReceiver.LocationChangeResult.CHANGED_TO_ENABLED;
 
 /**
  * Re-registers the geofences in the following conditions:
@@ -38,7 +43,7 @@ public class ReRegisterGeofencesReceiver extends BroadcastReceiver {
             return;
         }
 
-        if (!locationGotReEnabled(context, intent)) {
+        if (CHANGED_TO_DISABLED.equals(isLocationServicesChanged(context, intent))) {
             return;
         }
 
@@ -63,11 +68,17 @@ public class ReRegisterGeofencesReceiver extends BroadcastReceiver {
         return false;
     }
 
-    private boolean locationGotReEnabled(Context context, Intent intent) {
+    private LocationChangeResult isLocationServicesChanged(Context context, Intent intent) {
         if (LocationManager.MODE_CHANGED_ACTION.equals(intent.getAction())) {
             LocationChecker locationChecker = new LocationChecker(context);
-            return locationChecker.isLocationEnabled();
+            return locationChecker.isLocationEnabled() ? CHANGED_TO_ENABLED : CHANGED_TO_DISABLED;
         }
-        return false;
+        return LocationChangeResult.NOT_CHANGED;
+    }
+
+    enum LocationChangeResult {
+        NOT_CHANGED,
+        CHANGED_TO_ENABLED,
+        CHANGED_TO_DISABLED,
     }
 }
