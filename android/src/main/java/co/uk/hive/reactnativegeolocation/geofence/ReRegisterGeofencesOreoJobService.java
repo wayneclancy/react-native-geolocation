@@ -13,12 +13,15 @@ import co.uk.hive.reactnativegeolocation.PermissionChecker;
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class ReRegisterGeofencesOreoJobService extends JobService {
 
+    private static final boolean COMPLETE = false;
+
     private Function<? super Object, ? super Object> mEmptyCallback = o -> null;
 
     @Override
     public boolean onStartJob(JobParameters jobParameters) {
         if (!isLocationPermissionGranted()) {
             GeofenceLog.d("Location permission not granted. Cannot restart geofencing");
+            return COMPLETE;
         }
         
         LocationChecker locationChecker = new LocationChecker(this);
