@@ -1,6 +1,6 @@
 {
   "name": "@connected-home/react-native-geolocation",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Basic geolocation + geofencing. Delegates to react-native-background-geolocation for iOS.",
   "main": "index.js",
   "scripts": {
@@ -18,6 +18,6 @@
     "react-native": ">=0.36.0"
   },
   "dependencies": {
-    "react-native-background-geolocation": "^3.0.6"
+    "react-native-background-geolocation": "^2.14.2"
   }
 }
