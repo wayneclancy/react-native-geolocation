@@ -75,4 +75,8 @@ export default class RNGeolocation {
       return promise.then(successCallback).catch(failureCallback);
     }
   }
+
+  static isLocationEnabled() {
+    return NativeModules.RNGeolocation.isLocationEnabled();
+  }
 }
