@@ -18,13 +18,17 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
+import co.uk.hive.reactnativegeolocation.LocationServicesChecker;
+
 public class LocationController {
     private final Context mContext;
     private final FusedLocationProviderClient mLocationClient;
+    private final LocationServicesChecker mLocationServicesChecker;
 
     public LocationController(Context context) {
         mContext = context;
         mLocationClient = LocationServices.getFusedLocationProviderClient(context);
+        mLocationServicesChecker = new LocationServicesChecker(mContext);
     }
 
     @SuppressLint("MissingPermission")
@@ -67,18 +71,7 @@ public class LocationController {
     }
 
     private boolean isLocationEnabled() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            LocationManager lm = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
-            return lm.isLocationEnabled();
-        } else {
-            int mode = Settings.Secure.getInt(
-                    mContext.getContentResolver(),
-                    Settings.Secure.LOCATION_MODE,
-                    Settings.Secure.LOCATION_MODE_OFF
-            );
-
-            return mode != Settings.Secure.LOCATION_MODE_OFF;
-        }
+        return mLocationServicesChecker.isLocationEnabled();
     }
 
     private LocationRequest getLocationRequest(CurrentPositionRequest currentPositionRequest) {

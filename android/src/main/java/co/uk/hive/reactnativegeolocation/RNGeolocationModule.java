@@ -72,6 +72,14 @@ public class RNGeolocationModule extends ReactContextBaseJavaModule {
                 mRnMapper.readPositionRequest(currentPositionRequest), positionCallback, convertCallback(failureCallback));
     }
 
+    @ReactMethod
+    public void isLocationEnabled(Promise promise) {
+        final boolean locationEnabled = new LocationServicesChecker(getReactApplicationContext())
+                .isLocationEnabled();
+
+        promise.resolve(locationEnabled);
+    }
+
     private <T> Function<T, Object> convertCallback(Callback callback) {
         return t -> {
             callback.invoke(t);
