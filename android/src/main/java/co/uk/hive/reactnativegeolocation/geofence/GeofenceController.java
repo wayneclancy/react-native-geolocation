@@ -27,13 +27,17 @@ public class GeofenceController {
     }
 
     public void start(Function<? super Object, ? super Object> successCallback, Function<? super Object, ? super Object> failureCallback) {
-        if (mGeofenceRepository.getGeofences().isEmpty()) {
+        start(successCallback, failureCallback, mGeofenceRepository.getGeofences());
+    }
+
+    public void start(Function<? super Object, ? super Object> successCallback, Function<? super Object, ? super Object> failureCallback, List<Geofence> geofences) {
+        if (geofences.isEmpty()) {
             Log.w(getClass().getSimpleName(), "Starting geofences with none set, exiting");
             return;
         }
 
         mGeofenceEngine.addGeofences(
-                mGeofenceRepository.getGeofences(),
+                geofences,
                 successResult -> {
                     mGeofenceActivator.setGeofencesActivated(true);
                     return successCallback.apply(successResult);
@@ -48,7 +52,7 @@ public class GeofenceController {
             return;
         }
 
-        List<String> geofenceIds = getGeofenceIds();
+        List<String> geofenceIds = getGeofenceIdsToRemove();
         if (!geofenceIds.isEmpty()) {
             mGeofenceEngine.removeGeofences(
                     geofenceIds,
@@ -63,14 +67,26 @@ public class GeofenceController {
 
     public void restart(Function<? super Object, ? super Object> successCallback, Function<? super Object, ? super Object> failureCallback) {
         if (mGeofenceActivator.areGeofencesActivated()) {
-            start(successCallback, failureCallback);
+            final List<Geofence> geofences = Stream.of(mGeofenceRepository.getGeofences())
+                    .filterNot(GeofenceController::isInvalidGeofence)
+                    .toList();
+
+            start(successCallback, failureCallback, geofences);
         }
     }
 
-    private List<String> getGeofenceIds() {
+    private List<String> getGeofenceIdsToRemove() {
         return Stream.of(mGeofenceRepository.getGeofences())
+                .filterNot(GeofenceController::isInvalidGeofence)
                 .map(Geofence::getId)
                 .toList();
+    }
+
+    private static boolean isInvalidGeofence(Geofence geofence) {
+        // Removes geofences where `setGeofencesActivated` was set to `true` before crashing
+        // They cannot be restarted (it'll crash) and they cannot be removed (they were never added)
+        // Geofences added from 1.2.1 should never meet this condition
+        return geofence.getRadius() == 0;
     }
 
     public void addGeofences(List<Geofence> geofences) {
