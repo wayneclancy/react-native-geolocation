@@ -30,6 +30,7 @@ public class RNMapper {
         WritableMap coords = Arguments.createMap();
         coords.putDouble("latitude", location.getLatitude());
         coords.putDouble("longitude", location.getLongitude());
+        coords.putDouble("accuracy", location.getAccuracyInMeters());
         WritableMap result = Arguments.createMap();
         result.putMap("coords", coords);
         return result;

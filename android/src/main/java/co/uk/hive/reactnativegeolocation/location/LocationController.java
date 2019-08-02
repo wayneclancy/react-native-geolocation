@@ -82,7 +82,9 @@ public class LocationController {
                 if (locationResult.getLastLocation() != null) {
                     singleLocationCallback.locationReceived(new LatLng(
                             locationResult.getLastLocation().getLatitude(),
-                            locationResult.getLastLocation().getLongitude()));
+                            locationResult.getLastLocation().getLongitude(),
+                            locationResult.getLastLocation().getAccuracy()
+                    ));
                 } else {
                     singleLocationCallback.locationUnknown();
                 }
