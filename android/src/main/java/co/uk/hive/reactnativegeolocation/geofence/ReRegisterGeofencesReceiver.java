@@ -14,8 +14,6 @@ import com.annimon.stream.function.Function;
 
 import java.util.Objects;
 
-import co.uk.hive.reactnativegeolocation.LocationChecker;
-
 import static co.uk.hive.reactnativegeolocation.geofence.ReRegisterGeofencesReceiver.LocationChangeResult.CHANGED_TO_DISABLED;
 import static co.uk.hive.reactnativegeolocation.geofence.ReRegisterGeofencesReceiver.LocationChangeResult.CHANGED_TO_ENABLED;
 
@@ -50,8 +48,8 @@ public class ReRegisterGeofencesReceiver extends BroadcastReceiver {
             return;
         }
 
-        if (!isLocationPermissionGranted(context)) {
-            GeofenceLog.d("Location permission not granted. Cannot restart geofencing");
+        if (!isAllTimeLocationAccessGranted(context)) {
+            GeofenceLog.d("All-the-time location access not granted. Cannot restart geofencing");
             return;
         }
 
@@ -91,7 +89,7 @@ public class ReRegisterGeofencesReceiver extends BroadcastReceiver {
         CHANGED_TO_DISABLED,
     }
 
-    private boolean isLocationPermissionGranted(Context context) {
-        return new PermissionChecker(context).isLocationPermissionGranted();
+    private boolean isAllTimeLocationAccessGranted(Context context) {
+        return new PermissionChecker(context).isAllTimeLocationAccessGranted();
     }
 }
