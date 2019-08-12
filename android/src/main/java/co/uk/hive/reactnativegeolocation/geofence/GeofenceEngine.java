@@ -1,6 +1,7 @@
 package co.uk.hive.reactnativegeolocation.geofence;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -16,26 +17,30 @@ import java.util.List;
 
 import static com.google.android.gms.location.Geofence.*;
 
+import co.uk.hive.reactnativegeolocation.PermissionChecker;
+
 public class GeofenceEngine {
 
     private final GeofencingClient mGeofencingClient;
+    private final PermissionChecker mPermissionChecker;
     private final Context mContext;
     private PendingIntent mPendingIntent;
 
     GeofenceEngine(Context context) {
         mContext = context;
         mGeofencingClient = LocationServices.getGeofencingClient(mContext);
+        mPermissionChecker = new PermissionChecker(context);
 
         Intent intent = new Intent(mContext, GeofenceEventBroadcastReceiver.class);
         mPendingIntent = PendingIntent.getBroadcast(mContext, 0,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
+    @SuppressLint("MissingPermission")
     public void addGeofences(List<Geofence> geofenceRequests, Function<? super Object, ? super Object> successCallback,
                              Function<? super Object, ? super Object> failureCallback) {
-        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            throw new IllegalStateException("Location permission needs to be granted before calling addGeofences");
+        if (!mPermissionChecker.isAllTimeLocationAccessGranted()) {
+            throw new IllegalStateException("All-the-time location access needs to be granted before calling addGeofences");
         }
 
         List<com.google.android.gms.location.Geofence> geofences = Stream.of(geofenceRequests)
