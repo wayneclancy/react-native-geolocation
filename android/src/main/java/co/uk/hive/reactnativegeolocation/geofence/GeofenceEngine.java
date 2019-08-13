@@ -1,12 +1,10 @@
 package co.uk.hive.reactnativegeolocation.geofence;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.v4.app.ActivityCompat;
+
 import com.annimon.stream.Stream;
 import com.annimon.stream.function.Function;
 import com.google.android.gms.location.GeofencingClient;
@@ -39,7 +37,7 @@ public class GeofenceEngine {
     @SuppressLint("MissingPermission")
     public void addGeofences(List<Geofence> geofenceRequests, Function<? super Object, ? super Object> successCallback,
                              Function<? super Object, ? super Object> failureCallback) {
-        if (!mPermissionChecker.isAllTimeLocationAccessGranted()) {
+        if (!mPermissionChecker.isFullLocationPermissionGranted()) {
             throw new IllegalStateException("All-the-time location access needs to be granted before calling addGeofences");
         }
 

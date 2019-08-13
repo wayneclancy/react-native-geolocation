@@ -14,7 +14,7 @@ public class PermissionChecker {
         mContext = context;
     }
 
-    public boolean isAllTimeLocationAccessGranted() {
+    public boolean isFullLocationPermissionGranted() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             return isFineLocationPermissionGranted() && isBackgroundLocationPermissionGranted();
         } else {

@@ -48,7 +48,7 @@ public class ReRegisterGeofencesReceiver extends BroadcastReceiver {
             return;
         }
 
-        if (!isAllTimeLocationAccessGranted(context)) {
+        if (!isFullLocationPermissionGranted(context)) {
             GeofenceLog.d("All-the-time location access not granted. Cannot restart geofencing");
             return;
         }
@@ -89,7 +89,7 @@ public class ReRegisterGeofencesReceiver extends BroadcastReceiver {
         CHANGED_TO_DISABLED,
     }
 
-    private boolean isAllTimeLocationAccessGranted(Context context) {
-        return new PermissionChecker(context).isAllTimeLocationAccessGranted();
+    private boolean isFullLocationPermissionGranted(Context context) {
+        return new PermissionChecker(context).isFullLocationPermissionGranted();
     }
 }

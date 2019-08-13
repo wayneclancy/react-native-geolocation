@@ -19,7 +19,7 @@ public class ReRegisterGeofencesOreoJobService extends JobService {
 
     @Override
     public boolean onStartJob(JobParameters jobParameters) {
-        if (!isAllTimeLocationAccessGranted()) {
+        if (!isFullLocationPermissionGranted()) {
             GeofenceLog.d("All-the-time location access not granted. Cannot restart geofencing");
             return COMPLETE;
         }
@@ -40,7 +40,7 @@ public class ReRegisterGeofencesOreoJobService extends JobService {
         return false;
     }
 
-    private boolean isAllTimeLocationAccessGranted() {
-        return new PermissionChecker(this).isAllTimeLocationAccessGranted();
+    private boolean isFullLocationPermissionGranted() {
+        return new PermissionChecker(this).isFullLocationPermissionGranted();
     }
 }
