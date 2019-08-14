@@ -3,6 +3,7 @@ package co.uk.hive.reactnativegeolocation;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.support.v4.content.ContextCompat;
 
 public class PermissionChecker {
@@ -13,8 +14,22 @@ public class PermissionChecker {
         mContext = context;
     }
 
-    public boolean isLocationPermissionGranted() {
-        final int status = ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION);
-        return PackageManager.PERMISSION_GRANTED == status;
+    public boolean isFullLocationPermissionGranted() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            return isFineLocationPermissionGranted() && isBackgroundLocationPermissionGranted();
+        } else {
+            return isFineLocationPermissionGranted();
+        }
     }
+
+    private boolean isBackgroundLocationPermissionGranted() {
+        return ContextCompat.checkSelfPermission(mContext,
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private boolean isFineLocationPermissionGranted() {
+        return ContextCompat.checkSelfPermission(mContext,
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
 }
