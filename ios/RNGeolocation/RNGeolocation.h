@@ -6,7 +6,6 @@
 //  Copyright © 2019 Centrica. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import <React/RCTEventEmitter.h>
 
 @interface RNGeolocation : RCTEventEmitter <RCTInvalidating>
