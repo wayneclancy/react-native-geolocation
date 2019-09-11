@@ -8,8 +8,6 @@
 
 import Foundation
 import CoreLocation
-import MapKit
-
 
 @objc(RNHiveGeofence)
 class RNHiveGeofence: NSObject, Codable {
@@ -19,16 +17,14 @@ class RNHiveGeofence: NSObject, Codable {
     @objc var identifier: String
     @objc var notifyOnEntry: Bool
     @objc var notifyOnExit: Bool
-    var extras: [String: Codable]?
     
     enum RNHiveGeofenceKeys: String, CodingKey {
-        case latitude = "latitude"
-        case longitude = "longitude"
-        case radius = "radius"
-        case identifier = "identifier"
-        case notifyOnEntry = "notifyOnEntry"
-        case notifyOnExit = "notifyOnExit"
-        case extras = "extras"
+        case latitude       = "latitude"
+        case longitude      = "longitude"
+        case radius         = "radius"
+        case identifier     = "identifier"
+        case notifyOnEntry  = "notifyOnEntry"
+        case notifyOnExit   = "notifyOnExit"
     }
     
     init?(dictionary: [String: Any]) {
@@ -45,17 +41,14 @@ class RNHiveGeofence: NSObject, Codable {
         self.radius = radius
         self.notifyOnEntry = notifyOnEntry
         self.notifyOnExit = notifyOnExit
-        self.extras = dictionary[RNHiveGeofenceKeys.extras.rawValue] as? [String: Codable]
-        
     }
     
-    init(coordinate: CLLocationCoordinate2D, radius: CLLocationDistance, identifier: String = UUID().uuidString, notifyOnEntry: Bool = true, notifyOnExit: Bool = true, extras: [String: Codable]? = nil) {
+    init(coordinate: CLLocationCoordinate2D, radius: CLLocationDistance, identifier: String = UUID().uuidString, notifyOnEntry: Bool = true, notifyOnExit: Bool = true) {
         self.coordinate = coordinate
         self.radius = radius
         self.identifier = identifier
         self.notifyOnEntry = notifyOnEntry
         self.notifyOnExit = notifyOnExit
-        self.extras = extras
     }
     
     var title: String? {
@@ -87,7 +80,6 @@ class RNHiveGeofence: NSObject, Codable {
         try container.encode(identifier, forKey: .identifier)
         try container.encode(notifyOnEntry, forKey: .notifyOnEntry)
         try container.encode(notifyOnExit, forKey: .notifyOnExit)
-        //        try container.encode(extras, forKey: .extras)
     }
     
     func updateValues(_ geofence: RNHiveGeofence) {

@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		494D991F23290A9B005718FB /* RNHiveGeofence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F800F5231D60CD00A51C8A /* RNHiveGeofence.swift */; };
+		494D992023291092005718FB /* RNHiveGeolocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F800FB231EA08300A51C8A /* RNHiveGeolocationManager.swift */; };
+		494D99232329281D005718FB /* RNHiveGeofenceEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F800F9231E73AB00A51C8A /* RNHiveGeofenceEvent.swift */; };
 		49D81FB123226F9C00221A72 /* RNGeolocationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D81FB023226F9C00221A72 /* RNGeolocationTests.swift */; };
 		49D81FB323226F9C00221A72 /* libRNGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 49F8007A231956CD00A51C8A /* libRNGeolocation.a */; };
 		49F8007F231956CD00A51C8A /* RNGeolocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 49F8007E231956CD00A51C8A /* RNGeolocation.m */; };
@@ -201,6 +204,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				494D99232329281D005718FB /* RNHiveGeofenceEvent.swift in Sources */,
+				494D992023291092005718FB /* RNHiveGeolocationManager.swift in Sources */,
+				494D991F23290A9B005718FB /* RNHiveGeofence.swift in Sources */,
 				49D81FB123226F9C00221A72 /* RNGeolocationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

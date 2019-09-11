@@ -9,24 +9,6 @@
 import Foundation
 import UIKit
 import CoreLocation
-import UserNotifications
-
-// Set these constants to change renerated monitoring regions
-
-public struct RNHiveGeolocationNotification {
-    public struct LocationPositionUpdate {
-        public static var name: Notification.Name {
-            return Notification.Name("LocationPositionUpdate")
-        }
-        public static let locations = "locations"
-    }
-    public struct LocationAuthorisationStatusUpdate {
-        public static var name: Notification.Name {
-            return Notification.Name("LocationAuthorisationStatusUpdate")
-        }
-        public static let authStatus = "authStatus"
-    }
-}
 
 public struct RNHiveLocationRequest {
     let requestId: String
@@ -48,7 +30,6 @@ class RNHiveGeolocationManager: NSObject {
     static let shared = RNHiveGeolocationManager()
     
     private let locationManager = CLLocationManager()
-    private let notificationCenter = UNUserNotificationCenter.current()
     
     private let savedGeofencesKey = "savedItems"
     private var geofences: [RNHiveGeofence] = []
@@ -58,7 +39,7 @@ class RNHiveGeolocationManager: NSObject {
     private var geofenceRequestCompletion: RNHiveGeofenceRequestCompletion? = nil
     private var geofenceEventResponder: RNHiveGeofenceEventResponder? = nil
     
-    public func allGeofences() -> [RNHiveGeofence] {
+    @objc public func allGeofences() -> [RNHiveGeofence] {
         guard let savedData = UserDefaults.standard.data(forKey: savedGeofencesKey) else { return [] }
         let decoder = JSONDecoder()
         if let savedGeotifences = try? decoder.decode(Array.self, from: savedData) as [RNHiveGeofence] {
@@ -68,7 +49,11 @@ class RNHiveGeolocationManager: NSObject {
         return []
     }
     
-    public func saveGeofences() {
+    @objc public func monitoredRegions() -> [CLCircularRegion] {
+        return regions
+    }
+    
+    @objc public func saveGeofences() {
         let encoder = JSONEncoder()
         do {
             let data = try encoder.encode(geofences)
@@ -78,7 +63,7 @@ class RNHiveGeolocationManager: NSObject {
         }
     }
     
-    private func addGeofence(location: CLLocation, radius: CLLocationDistance) -> RNHiveGeofence? {
+    @objc public func addGeofence(location: CLLocation, radius: CLLocationDistance) -> RNHiveGeofence? {
         let geofence = RNHiveGeofence(coordinate: location.coordinate, radius: radius)
         appendGeofences(with: [geofence])
         return geofence
@@ -108,7 +93,6 @@ class RNHiveGeolocationManager: NSObject {
     }
     
     @objc public func removeAllGeofences() {
-        //        stopMonitoringGeofences(nil)
         geofences.removeAll()
         regions.removeAll()
         UserDefaults.standard.removeObject(forKey: savedGeofencesKey)
@@ -140,12 +124,6 @@ class RNHiveGeolocationManager: NSObject {
         
     }
     
-    private func startMonitoring(geofence: RNHiveGeofence) {
-        if let region = createLocationRegion(geofence: geofence) {
-            locationManager.startMonitoring(for: region)
-        }
-    }
-    
     @objc public func stopMonitoringGeofences(_ completion: RNHiveGeofenceRequestCompletion?) {
         geofenceRequestCompletion = completion
         for geofence in geofences {
@@ -153,6 +131,32 @@ class RNHiveGeolocationManager: NSObject {
         }
         // not sure why it's not called from RN side
         removeAllGeofences()
+    }
+    
+    @objc public func requestLocation(completion: RNHiveLocationRequestCompletion?) {
+        if let completion = completion {
+            let locationRequest = RNHiveLocationRequest(requestId: UUID().uuidString, comletion: completion)
+            pendingLocationRequests.append(locationRequest)
+        }
+        if CLLocationManager.authorizationStatus() == .authorizedAlways {
+            locationManager.delegate = self
+            locationManager.startUpdatingLocation()
+        } else {
+            requestLocationPermissions()
+        }
+    }
+    
+    private func requestLocationPermissions() {
+        if CLLocationManager.authorizationStatus() != .authorizedAlways {
+            locationManager.delegate = self
+            locationManager.requestAlwaysAuthorization()
+        }
+    }
+    
+    private func startMonitoring(geofence: RNHiveGeofence) {
+        if let region = createLocationRegion(geofence: geofence) {
+            locationManager.startMonitoring(for: region)
+        }
     }
     
     private func stopMonitoring(geofence: RNHiveGeofence) {
@@ -204,41 +208,16 @@ class RNHiveGeolocationManager: NSObject {
 }
 
 extension RNHiveGeolocationManager: CLLocationManagerDelegate {
-    private func requestLocationPermissions() {
-        if CLLocationManager.authorizationStatus() != .authorizedAlways {
-            locationManager.delegate = self
-            locationManager.requestAlwaysAuthorization()
-        }
-    }
-    
-    @objc public func requestLocation(completion: RNHiveLocationRequestCompletion?) {
-        if let completion = completion {
-            let locationRequest = RNHiveLocationRequest(requestId: UUID().uuidString, comletion: completion)
-            pendingLocationRequests.append(locationRequest)
-        }
-        if CLLocationManager.authorizationStatus() == .authorizedAlways {
-            locationManager.delegate = self
-            locationManager.startUpdatingLocation()
-        } else {
-            requestLocationPermissions()
-        }
-    }
-    
+
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         if status == .authorizedAlways {
             requestLocation(completion: nil)
         }
-        NotificationCenter.default.post(name: RNHiveGeolocationNotification.LocationAuthorisationStatusUpdate.name,
-                                        object: nil,
-                                        userInfo: [RNHiveGeolocationNotification.LocationAuthorisationStatusUpdate.authStatus: status])
     }
-    
+
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.first {
             print("coordinates: \(location.coordinate.latitude), \(location.coordinate.longitude)")
-            NotificationCenter.default.post(name: RNHiveGeolocationNotification.LocationPositionUpdate.name,
-                                            object: nil,
-                                            userInfo: [RNHiveGeolocationNotification.LocationPositionUpdate.locations: locations])
         }
         processPendingLocationRequests(locations: locations, error: nil)
     }
@@ -275,7 +254,7 @@ extension RNHiveGeolocationManager: CLLocationManagerDelegate {
         }
     }
     
-    func processGeofenceCompletion(regions: [CLCircularRegion]?, error: Error?) {
+    private func processGeofenceCompletion(regions: [CLCircularRegion]?, error: Error?) {
         
         guard let completion = geofenceRequestCompletion else {
             return
@@ -293,7 +272,7 @@ extension RNHiveGeolocationManager: CLLocationManagerDelegate {
         }
     }
     
-    func processPendingLocationRequests(locations: [CLLocation]?, error: Error?) {
+    private func processPendingLocationRequests(locations: [CLLocation]?, error: Error?) {
         if let locationRequest = pendingLocationRequests.first {
             locationRequest.comletion(locations, error)
             pendingLocationRequests.removeAll { $0.requestId == locationRequest.requestId }
@@ -321,13 +300,13 @@ public extension NotificationCenter {
 
 public extension CLLocation {
     enum CLLocationKeys: String, CodingKey {
-        case latitude = "latitude"
-        case longitude = "longitude"
-        case altitude = "altitude"
-        case heading = "heading"
-        case speed = "speed"
+        case latitude       = "latitude"
+        case longitude      = "longitude"
+        case altitude       = "altitude"
+        case heading        = "heading"
+        case speed          = "speed"
         case horizontalAccuracy = "accuracy"
-        case verticalAccuracy = "altitude_accuracy"
+        case verticalAccuracy   = "altitude_accuracy"
     }
     
     @objc var dictionary: [String: Any]? {
