@@ -61,11 +61,11 @@ class RNHiveGeofence: NSObject, Codable {
     
     required init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: RNHiveGeofenceKeys.self)
-        let latitude = try values.decode(Double.self, forKey: .latitude)
-        let longitude = try values.decode(Double.self, forKey: .longitude)
+        let latitude = try values.decode(CLLocationDegrees.self, forKey: .latitude)
+        let longitude = try values.decode(CLLocationDegrees.self, forKey: .longitude)
         
         coordinate = CLLocationCoordinate2DMake(latitude, longitude)
-        radius = try values.decode(Double.self, forKey: .radius)
+        radius = try values.decode(CLLocationDistance.self, forKey: .radius)
         identifier = try values.decode(String.self, forKey: .identifier)
         notifyOnEntry = try values.decode(Bool.self, forKey: .notifyOnEntry)
         notifyOnExit = try values.decode(Bool.self, forKey: .notifyOnExit)

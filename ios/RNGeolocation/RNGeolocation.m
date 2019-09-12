@@ -104,9 +104,9 @@ RCT_EXPORT_METHOD(removeGeofences) {
 
 RCT_EXPORT_METHOD(getCurrentPosition:(NSDictionary *)options success:(RCTResponseSenderBlock)success failure:(RCTResponseSenderBlock)failure) {
     [self.locationManager requestLocationWithCompletion:^(NSArray<CLLocation *> * _Nullable locations, NSError * _Nullable error) {
-        if (locations != nil) {
+        if (!error && locations != nil) {
             success(@[[locations.firstObject dictionary]]);
-        } else if (error != nil) {
+        } else {
             failure(@[@(error.code)]);
         }
     }];

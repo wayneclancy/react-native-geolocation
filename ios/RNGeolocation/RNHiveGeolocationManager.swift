@@ -39,14 +39,17 @@ class RNHiveGeolocationManager: NSObject {
     private var geofenceRequestCompletion: RNHiveGeofenceRequestCompletion? = nil
     private var geofenceEventResponder: RNHiveGeofenceEventResponder? = nil
     
-    @objc public func allGeofences() -> [RNHiveGeofence] {
+    @objc public func allGeofences() -> [RNHiveGeofence]  {
         guard let savedData = UserDefaults.standard.data(forKey: savedGeofencesKey) else { return [] }
         let decoder = JSONDecoder()
-        if let savedGeotifences = try? decoder.decode(Array.self, from: savedData) as [RNHiveGeofence] {
+        do {
+            let savedGeotifences = try decoder.decode(Array.self, from: savedData) as [RNHiveGeofence]
             geofences = savedGeotifences
             return savedGeotifences
+        } catch {
+            print("Error loading geofences: \(error).")
+            return []
         }
-        return []
     }
     
     @objc public func monitoredRegions() -> [CLCircularRegion] {
@@ -197,7 +200,9 @@ class RNHiveGeolocationManager: NSObject {
     
     private func handleRegionEvent(for region: CLRegion, event: RNHiveGeofenceCrossingEvent) {
         
-        guard let geofence = allGeofences().filter({ $0.identifier == region.identifier }).first, let location = locationManager.location, let region = region as? CLCircularRegion else {
+        guard let geofence = allGeofences().filter({ $0.identifier == region.identifier }).first,
+              let location = locationManager.location,
+              let region = region as? CLCircularRegion else {
             return
         }
         let geofenceEvent = RNHiveGeofenceEvent(geofence: geofence, location: location, region: region, time: Date(), type: event)

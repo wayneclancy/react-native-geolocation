@@ -1,7 +1,3 @@
-//import BackgroundGeolocation from 'react-native-background-geolocation';
-
-//export default BackgroundGeolocation;
-
 import { NativeModules, AppRegistry, NativeEventEmitter } from 'react-native';
 
 const TAG = "GeofenceEventTask"
@@ -13,10 +9,7 @@ export default class RNGeolocation {
   }
 
   static ready(config) {
-      return new Promise((resolve, reject) => {
-        NativeModules.RNGeolocation.ready();
-        resolve();
-      });
+    NativeModules.RNGeolocation.ready();
   }
 
   static onGeofence(geofenceListener) {
@@ -72,8 +65,6 @@ export default class RNGeolocation {
     let promise = new Promise((resolve, reject) => {
             let success = (location)     => { resolve(location) }
             let failure = (error)        => { reject(error) }
-            console.log("why am I here");
-            
             NativeModules.RNGeolocation.getCurrentPosition(currentPositionRequest || {}, success, failure);
         });
     if (arguments.length == 1) {

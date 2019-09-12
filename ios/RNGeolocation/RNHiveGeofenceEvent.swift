@@ -30,8 +30,6 @@ class RNHiveGeofenceEvent: NSObject/*: Codable */ {
     }
 }
 
-// Reproducing the data structure as in the RNBackgroundGeolocation lib
-
 extension RNHiveGeofenceEvent {
     enum RNHiveGeofenceEventDictionaryKeys: String, CodingKey {
         case action     = "action"
